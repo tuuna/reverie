@@ -57,7 +57,48 @@ class Solution {
 这里面有几个必须要注意的地方，首先这种题采用分治递归的思想，和二分的题思路差不多
 然后要注意>> << 左移右移这两种运算符的优先级是小于`+号`,`-号`的，所以必须要给括号
 
+104题 求树的深度，仍然是递归就可以，但是注意迭代的方法，搞懂迭代和递归的不同
 
+```
+class Solution {
+    public int maxDepth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        } else {
+            int lDepth = maxDepth(root.left);
+            int rDepth = maxDepth(root.right);
+            return lDepth > rDepth ? lDepth + 1 : rDepth + 1;
+        }
+    }
+}
+```
 
-    public TreeNode sortedArrayToBST(int[] nums) {题
-    public TreeNode sortedArrayToBST(int[] nums) {
+```
+//迭代
+import javafx.util.Pair;
+import java.lang.Math;
+
+class Solution {
+  public int maxDepth(TreeNode root) {
+    Queue<Pair<TreeNode, Integer>> stack = new LinkedList<>();
+    if (root != null) {
+      stack.add(new Pair(root, 1));
+    }
+
+    int depth = 0;
+    while (!stack.isEmpty()) {
+      Pair<TreeNode, Integer> current = stack.poll();
+      root = current.getKey();
+      int current_depth = current.getValue();
+      if (root != null) {
+        depth = Math.max(depth, current_depth);
+        stack.add(new Pair(root.left, current_depth + 1));
+        stack.add(new Pair(root.right, current_depth + 1));
+      }
+    }
+    return depth;
+  }
+};
+```
+
+其实就是一个深度遍历
