@@ -19,3 +19,45 @@ https://www.jianshu.com/p/7bba031b11e7
 
 **2019年9月11日**
 206 链表翻转，题目很基础，但是要注意两种方式，迭代以及递归
+
+**2019年9月16日**
+
+108题 整型数组转换为二叉查找树
+
+```
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public TreeNode sortedArrayToBST(int[] nums) {
+        return nums == null ? null : getTree(nums, 0, nums.length - 1);
+    }
+    
+    public TreeNode getTree(int[] nums, int left, int right) {
+        if (left > right) {
+            return null;
+        }
+        
+        int mid = left + ((right - left) >> 1);
+        
+        TreeNode root = new TreeNode(nums[mid]);
+        root.left = getTree(nums, left, mid - 1);
+        root.right = getTree(nums, mid + 1, right);
+        return root;
+    }
+}
+```
+
+这里面有几个必须要注意的地方，首先这种题采用分治递归的思想，和二分的题思路差不多
+然后要注意>> << 左移右移这两种运算符的优先级是小于`+号`,`-号`的，所以必须要给括号
+
+
+
+    public TreeNode sortedArrayToBST(int[] nums) {题
+    public TreeNode sortedArrayToBST(int[] nums) {
