@@ -139,3 +139,25 @@ class Solution {
     }
 }
 ```
+**2019年9月17日**
+575题 分糖果
+这道题主要是一道逻辑题，要拿到妹妹最多糖果种类要分情况讨论
+1. 当糖果的种类多于可以分到的糖果数时，当然能得到最多的糖果种类是能分到的糖果数
+2. 当糖果的种类少于可以分到的糖果数时，可以得到的糖果种类为糖果的种类
+这道题我是直接先对数组进行排序，然后去重得到糖果总数，应该还有更加机智的做法
+```
+class Solution {
+    public int distributeCandies(int[] candies) {
+        int[] cate = new int[10000];
+        Arrays.sort(candies);
+        int len = candies.length;
+        int index = 0;
+        for (int i = 1; i < len; i++) {
+            if(candies[i] != candies[i-1]) {
+                cate[index++] = candies[i];
+            }
+        }
+        return index+1 > len/2 ? len/2 : index+1;
+    }
+}
+```
