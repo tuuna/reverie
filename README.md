@@ -163,3 +163,23 @@ class Solution {
 ```
 283 移动零
 这道题主要是不使用额外空间移动元素，很简单，但是注意类似这种不使用格外空间以及圆体交换的题目
+
+**2019年9月18日**
+121 买卖股票1️⃣  这种题一般是用动态规划的方式或者贪心算法来解决，注意多看一下动态规范的基本思路和写法，目前存在的问题在于还不知道哪些题应该选择DP，哪些应该选择贪心，包括DP的写法和用法
+```
+class Solution {
+    public int maxProfit(int[] prices) {
+        int len = prices.length;
+        if (len <= 1)
+            return 0;
+        int min = prices[0], max = 0;
+        
+        
+        for(int i = 1; i < len; i++) {
+            max = Math.max(max, prices[i] - min);
+            min = Math.min(min, prices[i]);
+        }
+        return max;
+    }
+}
+```
