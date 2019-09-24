@@ -183,3 +183,15 @@ class Solution {
     }
 }
 ```
+**2019年9月24日**
+42. 接雨水 HARD
+
+这道题暴力思路比较简单，问题转化为求h，那么h[i]又等于左右两侧柱子的最大值中的较小值，即 h[i] = Math.min(左边柱子最大值, 右边柱子最大值)
+
+问题的关键在于求解左边柱子最大值和右边柱子最大值, 用两个数组来表示leftMax, rightMax， 以leftMax为例，leftMax[i]代表i的左侧柱子的最大值，因此我们维护两个数组即可。
+
+一种比较神奇的栈方法，类比括号配对
+转一下大佬的分析
+https://leetcode-cn.com/problems/trapping-rain-water/solution/xiang-xi-tong-su-de-si-lu-fen-xi-duo-jie-fa-by-w-8/
+
+动态规划这块还有大问题，虽然有往动态规划前进的思路，但是每次写代码不知道怎么写
