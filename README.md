@@ -198,3 +198,55 @@ https://leetcode-cn.com/problems/trapping-rain-water/solution/xiang-xi-tong-su-d
 
 **2019年9月25日**
 48.旋转图像
+这道题其实就是矩阵转置题目，只是要把矩阵旋转90°
+基本思路是先转置，再镜像对称
+```
+class Solution {
+    public void rotate(int[][] matrix) {
+       int martrix_row = matrix.length;
+       for (int i = 0; i < martrix_row; i++) {
+             for (int j = i,matrix_col = matrix[i].length; j < matrix_col; j++) {
+                int k = matrix[i][j];
+                matrix[i][j] = matrix[j][i];
+                matrix[j][i] = k;
+           }
+       }
+       for(int i=0;i<martrix_row;i++)
+		for (int j=0;j<martrix_row/2;j++)
+		{
+			int temp=matrix[i][j];
+			matrix[i][j]=matrix[i][martrix_row-j-1];
+			matrix[i][martrix_row-j-1]=temp;
+		}
+    }
+}
+```
+还有一个一开始看到这道题的想法，把边缘的一圈顺时针移动，但是不知道怎么编码
+旋转，划分成4个矩阵
+```
+class Solution {
+  public void rotate(int[][] matrix) {
+    int n = matrix.length;
+    for (int i = 0; i < n / 2 + n % 2; i++) {
+      for (int j = 0; j < n / 2; j++) {
+        int[] tmp = new int[4];
+        int row = i;
+        int col = j;
+        for (int k = 0; k < 4; k++) {
+          tmp[k] = matrix[row][col];
+          int x = row;
+          row = col;
+          col = n - 1 - x;
+        }
+        for (int k = 0; k < 4; k++) {
+          matrix[row][col] = tmp[(k + 3) % 4];
+          int x = row;
+          row = col;
+          col = n - 1 - x;
+        }
+      }
+    }
+  }
+}
+
+```
