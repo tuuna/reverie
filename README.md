@@ -250,3 +250,40 @@ class Solution {
 }
 
 ```
+双指针方法:https://www.jianshu.com/p/b5f9ac6de184  这个总结得很好
+
+**9月26日**
+49.字母异位词分组
+给定一个字符串数组，将字母异位词组合在一起。字母异位词指字母相同，但排列不同的字符串。
+
+示例:
+
+输入: ["eat", "tea", "tan", "ate", "nat", "bat"],
+输出:
+[
+  ["ate","eat","tea"],
+  ["nat","tan"],
+  ["bat"]
+]
+
+这种题一般看到的第一个思路就是把每个字符串中的字符进行排序，排序后判断是否一致，一致则放到List当中
+
+但是关键是怎么比较好，这里就涉及到Java中HashMap的使用技巧了
+```
+class Solution {
+    public List<List<String>> groupAnagrams(String[] strs) {
+        Map<String,List> map = new HashMap<String,List>();
+        for(String item : strs){
+            char[] arr = item.toCharArray(); 
+            Arrays.sort(arr);          
+            String str=String.valueOf(arr);
+            if(!map.containsKey(str)){
+                map.put(str,new ArrayList()); 
+            }
+            map.get(str).add(item);
+        }
+        return new ArrayList(map.values());
+    }
+}
+```
+把键作为比较，值存原始数据
