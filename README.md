@@ -287,3 +287,45 @@ class Solution {
 }
 ```
 把键作为比较，值存原始数据
+**9月27日**
+55. 跳跃游戏
+我自己开始的思路是找出所有下标为0的地方存起来
+然后循环遍历查找这个下标前比下标+1值小的，如果比它小则不可能跳到
+```
+class Solution {
+    public boolean canJump(int[] nums) {
+        int len = nums.length;
+        int[] steps = new int[len];
+        int steps_len = 0;
+        int flag = 0;
+        for (int i = 0; i < len; i++) {
+            if (nums[i] == 0) {
+                steps[steps_len++] = i+1;
+            }
+        }
+        if (steps.length == 0) {
+            return true;
+        } else {
+            for (int i = 0; i < steps_len; i++) {
+                int value = steps[i];
+                for (int j = 0; j < steps[i]; j++) {
+                    if (nums[j] == 0) {
+                        break;
+                    }
+                    if(nums[j] < value ) {
+                        flag += 1;
+                    } 
+                    value = value - 1;
+                }
+            }
+        }
+        if (flag > 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+}
+```
+但是没跑通...
+
