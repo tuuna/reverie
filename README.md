@@ -328,4 +328,55 @@ class Solution {
 }
 ```
 但是没跑通...
+还是思路有问题
+```
+int n=1;
+        for(int i=nums.length-2;i>=0;i--){
+            if(nums[i]>=n)
+            {
+                n=1;
+            }
+            else
+            {
+                n++;
+            }
+            if(i==0&&n>1)
+            {
+                return false;
+            }
+        }
+        return true;
+```
+从后往前遍历数组，如果遇到的元素可以到达最后一行，则截断后边的元素。否则继续往前，
+若最后剩下的元素大于1个，则可以判断为假。否则就是真
 
+**10月8日**
+56 合并区间   这种题特别特别重要，很可能会有很多变式考察
+
+最开始想的是暴力解法，不排序，直接比较左右区间，但是要记得这种思想，很多题目先进行排序对于最终效率是有提升的
+
+```
+public int[][] merge(int[][] intervals) {
+        List<int[]> res = new ArrayList<>();
+        if (intervals == null || intervals.length == 0)
+            return res.toArray(new int[0][]);
+        Arrays.sort(intervals, new Comparator<int[]>() {
+            @Override
+            public int compare(int[] o1, int[] o2) {
+                return o1[0] - o2[0];
+            }
+        });
+        int i = 0;
+        while (i < intervals.length) {
+            int left = intervals[i][0];
+            int right = intervals[i][1];
+            while (i < intervals.length - 1 && right >= intervals[i + 1][0]) {
+                i++;
+                right = Math.max(right, intervals[i][1]);
+            }
+            res.add(new int[] { left, right });
+            i++;
+        }
+        return res.toArray(new int[0][]);
+```
+62 不同路径 动态规划没看懂
