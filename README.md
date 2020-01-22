@@ -55,6 +55,8 @@ class Solution {
 ```
 
 这里面有几个必须要注意的地方，首先这种题采用分治递归的思想，和二分的题思路差不多
+
+2
 然后要注意>> << 左移右移这两种运算符的优先级是小于`+号`,`-号`的，所以必须要给括号
 
 104题 求树的深度，仍然是递归就可以，但是注意迭代的方法，搞懂迭代和递归的不同
@@ -165,218 +167,43 @@ class Solution {
 这道题主要是不使用额外空间移动元素，很简单，但是注意类似这种不使用格外空间以及圆体交换的题目
 
 **2019年9月18日**
-121 买卖股票1️⃣  这种题一般是用动态规划的方式或者贪心算法来解决，注意多看一下动态规范的基本思路和写法，目前存在的问题在于还不知道哪些题应该选择DP，哪些应该选择贪心，包括DP的写法和用法
+121 买卖股票1️⃣  这种题一般是用动态规划的方式或者贪心算法来解决，注意多
+
+**2020年1月22日**
+21 合并两个有序链表
+递归、迭代
 ```
-class Solution {
-    public int maxProfit(int[] prices) {
-        int len = prices.length;
-        if (len <= 1)
-            return 0;
-        int min = prices[0], max = 0;
-        
-        
-        for(int i = 1; i < len; i++) {
-            max = Math.max(max, prices[i] - min);
-            min = Math.min(min, prices[i]);
+if (l1 == null) {
+            return l2;
         }
-        return max;
-    }
-}
-```
-**2019年9月24日**
-42. 接雨水 HARD
-
-这道题暴力思路比较简单，问题转化为求h，那么h[i]又等于左右两侧柱子的最大值中的较小值，即 h[i] = Math.min(左边柱子最大值, 右边柱子最大值)
-
-问题的关键在于求解左边柱子最大值和右边柱子最大值, 用两个数组来表示leftMax, rightMax， 以leftMax为例，leftMax[i]代表i的左侧柱子的最大值，因此我们维护两个数组即可。
-
-一种比较神奇的栈方法，类比括号配对
-转一下大佬的分析
-https://leetcode-cn.com/problems/trapping-rain-water/solution/xiang-xi-tong-su-de-si-lu-fen-xi-duo-jie-fa-by-w-8/
-
-动态规划这块还有大问题，虽然有往动态规划前进的思路，但是每次写代码不知道怎么写
-
-**2019年9月25日**
-48.旋转图像
-这道题其实就是矩阵转置题目，只是要把矩阵旋转90°
-基本思路是先转置，再镜像对称
-```
-class Solution {
-    public void rotate(int[][] matrix) {
-       int martrix_row = matrix.length;
-       for (int i = 0; i < martrix_row; i++) {
-             for (int j = i,matrix_col = matrix[i].length; j < matrix_col; j++) {
-                int k = matrix[i][j];
-                matrix[i][j] = matrix[j][i];
-                matrix[j][i] = k;
-           }
-       }
-       for(int i=0;i<martrix_row;i++)
-		for (int j=0;j<martrix_row/2;j++)
-		{
-			int temp=matrix[i][j];
-			matrix[i][j]=matrix[i][martrix_row-j-1];
-			matrix[i][martrix_row-j-1]=temp;
-		}
-    }
-}
-```
-还有一个一开始看到这道题的想法，把边缘的一圈顺时针移动，但是不知道怎么编码
-旋转，划分成4个矩阵
-```
-class Solution {
-  public void rotate(int[][] matrix) {
-    int n = matrix.length;
-    for (int i = 0; i < n / 2 + n % 2; i++) {
-      for (int j = 0; j < n / 2; j++) {
-        int[] tmp = new int[4];
-        int row = i;
-        int col = j;
-        for (int k = 0; k < 4; k++) {
-          tmp[k] = matrix[row][col];
-          int x = row;
-          row = col;
-          col = n - 1 - x;
+        else if (l2 == null) {
+            return l1;
         }
-        for (int k = 0; k < 4; k++) {
-          matrix[row][col] = tmp[(k + 3) % 4];
-          int x = row;
-          row = col;
-          col = n - 1 - x;
+        else if (l1.val < l2.val) {
+            l1.next = mergeTwoLists(l1.next, l2);
+            return l1;
         }
-      }
-    }
-  }
-}
-
+        else {
+            l2.next = mergeTwoLists(l1, l2.next);
+            return l2;
+        }
 ```
-双指针方法:https://www.jianshu.com/p/b5f9ac6de184  这个总结得很好
-
-**9月26日**
-49.字母异位词分组
-给定一个字符串数组，将字母异位词组合在一起。字母异位词指字母相同，但排列不同的字符串。
-
-示例:
-
-输入: ["eat", "tea", "tan", "ate", "nat", "bat"],
-输出:
-[
-  ["ate","eat","tea"],
-  ["nat","tan"],
-  ["bat"]
-]
-
-这种题一般看到的第一个思路就是把每个字符串中的字符进行排序，排序后判断是否一致，一致则放到List当中
-
-但是关键是怎么比较好，这里就涉及到Java中HashMap的使用技巧了
 ```
-class Solution {
-    public List<List<String>> groupAnagrams(String[] strs) {
-        Map<String,List> map = new HashMap<String,List>();
-        for(String item : strs){
-            char[] arr = item.toCharArray(); 
-            Arrays.sort(arr);          
-            String str=String.valueOf(arr);
-            if(!map.containsKey(str)){
-                map.put(str,new ArrayList()); 
+ListNode prehead = new ListNode(-1);
+
+        ListNode prev = prehead;
+        while (l1 != null && l2 != null) {
+            if (l1.val <= l2.val) {
+                prev.next = l1;
+                l1 = l1.next;
+            } else {
+                prev.next = l2;
+                l2 = l2.next;
             }
-            map.get(str).add(item);
+            prev = prev.next;
         }
-        return new ArrayList(map.values());
-    }
-}
-```
-把键作为比较，值存原始数据
-**9月27日**
-55. 跳跃游戏
-我自己开始的思路是找出所有下标为0的地方存起来
-然后循环遍历查找这个下标前比下标+1值小的，如果比它小则不可能跳到
-```
-class Solution {
-    public boolean canJump(int[] nums) {
-        int len = nums.length;
-        int[] steps = new int[len];
-        int steps_len = 0;
-        int flag = 0;
-        for (int i = 0; i < len; i++) {
-            if (nums[i] == 0) {
-                steps[steps_len++] = i+1;
-            }
-        }
-        if (steps.length == 0) {
-            return true;
-        } else {
-            for (int i = 0; i < steps_len; i++) {
-                int value = steps[i];
-                for (int j = 0; j < steps[i]; j++) {
-                    if (nums[j] == 0) {
-                        break;
-                    }
-                    if(nums[j] < value ) {
-                        flag += 1;
-                    } 
-                    value = value - 1;
-                }
-            }
-        }
-        if (flag > 0) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-}
-```
-但是没跑通...
-还是思路有问题
-```
-int n=1;
-        for(int i=nums.length-2;i>=0;i--){
-            if(nums[i]>=n)
-            {
-                n=1;
-            }
-            else
-            {
-                n++;
-            }
-            if(i==0&&n>1)
-            {
-                return false;
-            }
-        }
-        return true;
-```
-从后往前遍历数组，如果遇到的元素可以到达最后一行，则截断后边的元素。否则继续往前，
-若最后剩下的元素大于1个，则可以判断为假。否则就是真
 
-**10月8日**
-56 合并区间   这种题特别特别重要，很可能会有很多变式考察
+        prev.next = l1 == null ? l2 : l1;
 
-最开始想的是暴力解法，不排序，直接比较左右区间，但是要记得这种思想，很多题目先进行排序对于最终效率是有提升的
-
+        return prehead.next;
 ```
-public int[][] merge(int[][] intervals) {
-        List<int[]> res = new ArrayList<>();
-        if (intervals == null || intervals.length == 0)
-            return res.toArray(new int[0][]);
-        Arrays.sort(intervals, new Comparator<int[]>() {
-            @Override
-            public int compare(int[] o1, int[] o2) {
-                return o1[0] - o2[0];
-            }
-        });
-        int i = 0;
-        while (i < intervals.length) {
-            int left = intervals[i][0];
-            int right = intervals[i][1];
-            while (i < intervals.length - 1 && right >= intervals[i + 1][0]) {
-                i++;
-                right = Math.max(right, intervals[i][1]);
-            }
-            res.add(new int[] { left, right });
-            i++;
-        }
-        return res.toArray(new int[0][]);
-```
-62 不同路径 动态规划没看懂
