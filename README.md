@@ -208,6 +208,8 @@ ListNode prehead = new ListNode(-1);
         return prehead.next;
 ```
 **2020年2月11日**
+递归、回溯专题
+记忆化搜索算法
 40 组合总数2
 ```
 class Solution {
@@ -248,6 +250,24 @@ class Solution {
         Deque<Integer> path = new ArrayDeque<>(len);
         dfs(candidates, len, 0, target, path, res);
         return res;
+    }
+}
+```
+78 子集
+```
+//二进制
+class Solution {
+
+    public List<List<Integer>> subsets(int[] nums) {
+        List<List<Integer>> res = new ArrayList<List<Integer>>();
+        for (int i = 0; i < (1 << nums.length); i++) {
+            List<Integer> sub = new ArrayList<Integer>();
+            for (int j = 0; j < nums.length; j++)
+                if (((i >> j) & 1) == 1) sub.add(nums[j]);
+            res.add(sub);
+        }
+        return res;
+
     }
 }
 ```
