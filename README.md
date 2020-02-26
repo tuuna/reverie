@@ -1,305 +1,204 @@
-# leetcode_sign
-Leetcode打卡记录
+**排序**
+重点：快速排序、归并排序、堆排序（面试问排序基本就是这三个，理解并背熟）
+一般：冒泡排序、选择排序、插入排序、拓扑排序
+- [x] LintCode 463 Sort Integers（用冒泡排序、选择排序、插入排序都实现一遍）
 
-**2019年9月9日**
+- [x] LeetCode 148 Sort List（链表排序，最简单是用归并排序做，有余力可以尝试快速排序来做）
+- [x] LeetCode 215 Kth Largest Element in an Array（方法1：堆 方法二：快速排序（推荐））
+（面试题40：最小的k个数）
+- [x] LeetCode 347 Top K Frequent Elements（堆排序、桶排序）
+- [x] LintCode 532 Reverse Pairs（归并排序的应用）（面试题51：数组中的逆序对）
+- [x] LeetCode 315 Count of Smaller Numbers After Self（归并排序的应用）
+- [x] LeetCode 207 Course Schedule （拓扑排序）
+- [x] LeetCode 210 Course Schedule II（拓扑排序）
+- [x] leetcode 56 Merge Intervals (合并n个区间)
 
-342,371题  简单题，主要是位运算
+**数组**
+- [x] 442. Find All Duplicates in an Array(面试题3：数组中重复的数字)
+- [x] leetcode 387. First Unique Character in a String（面试题50：第一个只出现一次的字符）
+- [x] LeetCode 189 Rotate Array（翻转数组）(面试题58：翻转字符串)
+- [x] LintCode 31 Partition Array（快速排序中的一次partition）
+- [x] LintCode 373 Partition Array by Odd and Even（快速排序中的一次partition）
+- [x] LintCode 144 Interleaving Positive and Negative Numbers（快速排序中的一次partition）
+- [x] LeetCode 54 Spiral Matrix（面试题29 顺时针打印矩阵）
+- [x] LeetCode 59 Spiral Matrix II
+- [x] LeetCode 53 Maximum Subarray（DP）（面试题42：连续子数组的最大和）
+- [x] LeetCode 152 Maximum Product Subarray（DP）
+- [x] LintCode 138 Subarray Sum（子数组之和 = 0，hashmap、空间换时间）
+- [x] LintCode 139 Subarray Sum Closest（排序）
+- [x] LeetCode 136 Single Number（位操作、异或）
+- [x] LeetCode 137 Single Number II（位操作、通用解法）
+- [x] LeetCode 260 Single Number III（位操作）（面试题56：数组中数字出现的次数）
+- [x] LeetCode 263 Ugly Number
+- [x] LeetCode 264 Ugly Number II（面试题49：丑数）
+- [x] LeetCode 295 Find Median from Data Stream（数据流中位数，设计、最大堆、最小堆）
+（面试题41：数据流中的中位数）
+- [x] LeetCode 480 Sliding Window Median（滑动窗口中位数，最大堆、最小堆）
+- [x] LeetCode 239 Sliding Window Maximum（双端队列）（面试题59：队列的最大值）
+- [x] LeetCode 128 Longest Consecutive Sequence（hashset、空间换时间）
+- [x] LeetCode 169 Majority Element（面试题39：数组中出现次数超过一半的数字）
 
-342题主要是4的幂次方相关的一些规则，比如2的幂次方规则n&(n-1) == 0以及4的幂次方的规则(n-1)%3 == 0
+**双指针**
+使用双指针一般需要数组是有序的
+- [x] LeetCode 392 Is Subsequence（双指针）
+- [x] LeetCode 1 Two Sum （两个数字之和=target，hashmap，空间换时间）
+- [x] leetcode 167 Two Sum II - Input array is sorted(面试题57：和为s的数字)
+- [x] LeetCode 15 3Sum （排序+双指针）
+- [x] LeetCode 16 3Sum Closest
+- [x] LeetCode 18 4Sum
+- [x] leetcode 3 Longest Substring Without Repeating Characters
+（面试题48：最长不含重复字符的子字符串）（hashmap 加双指针（滑动窗口））
+- [x] LeetCode 42 Trapping Rain Water
 
-371题主要是位运算，加减乘除注意都要学会，很重要
+**链表**
+链表题没什么好说的，就是一些指针的操作，注意以下两点就行
+7.  当你预估到返回的链表头结点可能跟原有的链表头节点不一样时，建一个虚拟节点dummy，值任意，比如0，最后返回的新的链表头结点就是dummy.next，这一条非常好用！
+8.  当操作一个链表节点的时候，时刻想一想要访问的链表节点是否为null
+- [x] LeetCode 206 Reverse Linked List（递归、迭代）（面试题24 反转链表）
+- [x] 面试题6  从尾到头打印链表
+- [x] LeetCode 92 Reverse Linked List II
+- [x] LeetCode 86 Partition List （LeetCode 328 Odd Even Linked List 一样）
+- [x] LeetCode 83 Remove Duplicates from Sorted List
+- [x] LeetCode 82 Remove Duplicates from Sorted List II
+- [x] LeetCode 237 Delete Node in a Linked List（面试题18 删除链表的节点）
+- [x] LeetCode 19 Remove Nth Node From End of List（面试题22：链表中倒数第k个节点）
+- [x] LeetCode 203 Remove Linked List Elements
+- [x] LeetCode 61 Rotate List
+- [x] LeetCode 2 Add Two Numbers
+- [x] LeetCode 445 Add Two Numbers II
+- [x] LeetCode 234 Palindrome Linked List
+- [x] LeetCode 24 Swap Nodes in Pairs
+- [x] LeetCode 160 Intersection of Two Linked Lists（面试题52：两个链表的第一个公共结点）
+- [x] LeetCode 141 Linked List Cycle（面试题23：链表中环的入口节点）
+- [x] LeetCode 142 Linked List Cycle II
+- [x] LeetCode 21 Merge Two Sorted Lists（面试题25：合并两个排序的链表）
+- [x] LeetCode 23 Merge k Sorted Lists（变型：N个倒序链表合并）
+- [x] LeetCode 138 Copy List with Random Pointer（面试题35：复杂链表的复制）
+- [x] LeetCode 25 Reverse Nodes in k-Group
+- [x] LeetCode 143 Reorder List
+- [x] LeetCode 146 LRU Cache（非常重要的一道题，双链表 + HashMap解决）（LinkedHashMap）
 
-https://www.jianshu.com/p/7bba031b11e7
+**二分**
+- [x] LeetCode 35 Search Insert Position
+- [x] LeetCode 34 Find First and Last Position of Element in Sorted Array(面试题53：数字在排序数组中出现的次数 )
+- [x] LeetCode 162 Find Peak Element
+一个先递增后递减的序列，允许有重复值，找出最大值（和162题一样解法）
+- [x] LeetCode 74 Search a 2D Matrix
+- [x] LeetCode 240 Search a 2D Matrix II（面试题4：二维数组中的查找）
+- [x] LeetCode 153 Find Minimum in Rotated Sorted Array
+- [x] LeetCode 154 Find Minimum in Rotated Sorted Array II
+- [x] LeetCode 33 Search in Rotated Sorted Array（面试题11 旋转数组的最小值）
+- [x] LeetCode 81 Search in Rotated Sorted Array II
+- [x] LeetCode 378 Kth Smallest Element in a Sorted Matrix
+（二维矩阵、每行每列都有序，找到第k个大）
+- [x] LeetCode 4 Median of Two Sorted Arrays（两个有序数组的中位数）
+- [x] 有序数组(a,a+1,a+2,a+3,….a+m,a+m,a+m+1,….) 寻找重复数字a+m
+（变型：一个整型有序数组，数组里除了一个数字之外，其他的数字都出现了两次。请写程序找出这个只出现一次的数字）
 
-**2019年9月10日**
-198题  简单题
-这道题的正经思路是使用DP，但是这道题根据题目所给的规则可以得出
+**栈**
+- [x] LeetCode 155 Min Stack（面试题30 包含min函数的栈）
+- [x] LeetCode 232 Implement Queue using Stacks（面试题9  两个栈实现队列）
+- [x] LeetCode 225 Implement Stack using Queues
+- [x] LeetCode 84 Largest Rectangle in Histogram  （单调栈）
+- [x] LeetCode 85 Maximal Rectangle （单调栈）
+- [x] LeetCode 394 Decode String
+- [x] 面试题31：栈的压入、弹出序列
 
-这道题有一道变式，就是加入不是算出所有路径，而是只能比较相邻两家，这个应该怎么做要思考一下，目前想到的是利用HashMap
-
-**2019年9月11日**
-206 链表翻转，题目很基础，但是要注意两种方式，迭代以及递归
-
-**2019年9月16日**
-
-108题 整型数组转换为二叉查找树
-
-```
-/**
- * Definition for a binary tree node.
- * public class TreeNode {
- *     int val;
- *     TreeNode left;
- *     TreeNode right;
- *     TreeNode(int x) { val = x; }
- * }
- */
-class Solution {
-    public TreeNode sortedArrayToBST(int[] nums) {
-        return nums == null ? null : getTree(nums, 0, nums.length - 1);
-    }
-    
-    public TreeNode getTree(int[] nums, int left, int right) {
-        if (left > right) {
-            return null;
-        }
-        
-        int mid = left + ((right - left) >> 1);
-        
-        TreeNode root = new TreeNode(nums[mid]);
-        root.left = getTree(nums, left, mid - 1);
-        root.right = getTree(nums, mid + 1, right);
-        return root;
-    }
-}
-```
-
-这里面有几个必须要注意的地方，首先这种题采用分治递归的思想，和二分的题思路差不多
-
-2
-然后要注意>> << 左移右移这两种运算符的优先级是小于`+号`,`-号`的，所以必须要给括号
-
-104题 求树的深度，仍然是递归就可以，但是注意迭代的方法，搞懂迭代和递归的不同
-
-```
-class Solution {
-    public int maxDepth(TreeNode root) {
-        if (root == null) {
-            return 0;
-        } else {
-            int lDepth = maxDepth(root.left);
-            int rDepth = maxDepth(root.right);
-            return lDepth > rDepth ? lDepth + 1 : rDepth + 1;
-        }
-    }
-}
-```
-
-```
-//迭代
-import javafx.util.Pair;
-import java.lang.Math;
-
-class Solution {
-  public int maxDepth(TreeNode root) {
-    Queue<Pair<TreeNode, Integer>> stack = new LinkedList<>();
-    if (root != null) {
-      stack.add(new Pair(root, 1));
-    }
-
-    int depth = 0;
-    while (!stack.isEmpty()) {
-      Pair<TreeNode, Integer> current = stack.poll();
-      root = current.getKey();
-      int current_depth = current.getValue();
-      if (root != null) {
-        depth = Math.max(depth, current_depth);
-        stack.add(new Pair(root.left, current_depth + 1));
-        stack.add(new Pair(root.right, current_depth + 1));
-      }
-    }
-    return depth;
-  }
-};
-```
-
-其实就是一个深度遍历
-
-107 广度遍历 树
-广度遍历一般要借助栈或者队列来实现
-```
-/**
- * Definition for a binary tree node.
- * public class TreeNode {
- *     int val;
- *     TreeNode left;
- *     TreeNode right;
- *     TreeNode(int x) { val = x; }
- * }
- */
-class Solution {
-    public List<List<Integer>> levelOrderBottom(TreeNode root) {
-        LinkedList<List<Integer>> list = new LinkedList<>();
-        if (root == null)
-            return list;
-        Queue<TreeNode> queue = new LinkedList<>();
-        queue.add(root);
-        while (!queue.isEmpty()) {
-            List<Integer> level = new ArrayList<>();
-            int count = queue.size();
-            for (int i = 0; i < count; i++) {
-                TreeNode node = queue.poll();
-                level.add(node.val);
-                if (node.left != null)
-                    queue.add(node.left);
-                if (node.right != null)
-                    queue.add(node.right);
-            }
-            list.addFirst(level);
-        }
-        return list;
-    }
-}
-```
-**2019年9月17日**
-575题 分糖果
-这道题主要是一道逻辑题，要拿到妹妹最多糖果种类要分情况讨论
-1. 当糖果的种类多于可以分到的糖果数时，当然能得到最多的糖果种类是能分到的糖果数
-2. 当糖果的种类少于可以分到的糖果数时，可以得到的糖果种类为糖果的种类
-这道题我是直接先对数组进行排序，然后去重得到糖果总数，应该还有更加机智的做法
-```
-class Solution {
-    public int distributeCandies(int[] candies) {
-        int[] cate = new int[10000];
-        Arrays.sort(candies);
-        int len = candies.length;
-        int index = 0;
-        for (int i = 1; i < len; i++) {
-            if(candies[i] != candies[i-1]) {
-                cate[index++] = candies[i];
-            }
-        }
-        return index+1 > len/2 ? len/2 : index+1;
-    }
-}
-```
-283 移动零
-这道题主要是不使用额外空间移动元素，很简单，但是注意类似这种不使用格外空间以及圆体交换的题目
-
-**2019年9月18日**
-121 买卖股票1️⃣  这种题一般是用动态规划的方式或者贪心算法来解决，注意多
-
-**2020年1月22日**
-21 合并两个有序链表
-递归、迭代
-```
-if (l1 == null) {
-            return l2;
-        }
-        else if (l2 == null) {
-            return l1;
-        }
-        else if (l1.val < l2.val) {
-            l1.next = mergeTwoLists(l1.next, l2);
-            return l1;
-        }
-        else {
-            l2.next = mergeTwoLists(l1, l2.next);
-            return l2;
-        }
-```
-```
-ListNode prehead = new ListNode(-1);
-
-        ListNode prev = prehead;
-        while (l1 != null && l2 != null) {
-            if (l1.val <= l2.val) {
-                prev.next = l1;
-                l1 = l1.next;
-            } else {
-                prev.next = l2;
-                l2 = l2.next;
-            }
-            prev = prev.next;
-        }
-
-        prev.next = l1 == null ? l2 : l1;
-
-        return prehead.next;
-```
-**2020年2月11日**
-递归、回溯专题
-记忆化搜索算法
-40 组合总数2
-```
-class Solution {
-    private void dfs(int[] candidates, int len, int begin, int residue, Deque<Integer> path, List<List<Integer>> res) {
-        if (residue == 0) {
-            res.add(new ArrayList<>(path));
-            return;
-        }
-        for (int i = begin; i < len; i++) {
-
-            if (residue - candidates[i] < 0) {
-                break;
-            }
+**BFS**
+- [x] LeetCode 102 Binary Tree Level Order Traversal   （面试题32：层次遍历二叉树）
+- [x] LeetCode 107 Binary Tree Level Order Traversal II   （层序遍历）
+- [x] LeetCode 103 Binary Tree Zigzag Level Order Traversal    （之字形遍历）
+- [x] 987. Vertical Order Traversal of a Binary Tree（314. Binary Tree Vertical Order Traversal）（二叉树垂直遍历）（从上往下看二叉树，打印节点）（都是同一个解题思路）
 
 
-            if (i > begin && candidates[i] == candidates[i - 1]) {
-                continue;
-            }
+**DFS**
+- [x] LeetCode 200 Number of Islands
+- [x] 面试题8  二叉树的下一个节点
+- [x] LeetCode 144 Binary Tree Preorder Traversal    （前序遍历，递归和迭代都实现一遍）
+- [x] LeetCode 94 Binary Tree Inorder Traversal    （中序遍历，递归和迭代都实现一遍）
+- [x] LeetCode 145 Binary Tree Postorder Traversal    （后序遍历，递归和迭代都实现一遍）
+- [x] LeetCode 255. Verify Preorder Sequence in Binary Search Tree（检查二叉搜索树的前序遍历）
+(面试题33：二叉搜索树的后序遍历序列)
+- [x] LeetCode 105 Construct Binary Tree from Preorder and Inorder Traversal
+（面试题7  根据先序中序、重建二叉树）
+- [x] LeetCode 106 Construct Binary Tree from Inorder and Postorder Traversal
+- [x] 面试题37：序列化二叉树
+- [x] LeetCode 110 Balanced Binary Tree（判断是否为平衡二叉树）
+- [x] LeetCode 98 Validate Binary Search Tree（判断是否为平衡二叉搜索树）
+- [x] LeetCode 236 Lowest Common Ancestor of a Binary Tree（最近公共祖先）
+（面试题68：树中两个节点的最低公共祖先）
+- [x] LeetCode 104 Maximum Depth of Binary Tree（面试题55：二叉树的深度）
+- [x] LeetCode 111 Minimum Depth of Binary Tree（二叉树的最小深度）
+- [x] LeetCode 257 Binary Tree Paths
+- [x] LeetCode 112 Path Sum
+- [x] LeetCode 113 Path Sum II（面试题34：二叉树中和为某一值的路径）
+- [x] LeetCode 437 Path Sum III
+- [x] LeetCode 114 Flatten Binary Tree to Linked List
+- [x] LintCode 595 Binary Tree Longest Consecutive Sequence
+- [x] LintCode 614 Binary Tree Longest Consecutive Sequence II
+- [x] LintCode  375 Clone Binary Tree
+- [x] LeetCode 101 Symmetric Tree（面试题28 对称的二叉树）
+- [x] LeetCode 572 Subtree of Another Tree（面试题26：树的子结构）
+- [x] leetcode 226. Invert Binary Tree（面试题27 二叉树的镜像）
+- [x] LeetCode 124 Binary Tree Maximum Path Sum
+- [x] LeetCode 109 Convert Sorted List to Binary Search Tree
+- [x] LintCode 378 Convert Binary Search Tree to Doubly Linked List
+（面试题36：二叉搜索树与双向链表）
+- [x] leetcode 230. Kth Smallest Element in a BST（面试题54：二叉搜索树的第k小节点）
+- [x] leetcode 450 Delete Node in a BST（二叉搜索树删除一个节点）
 
-            path.addLast(candidates[i]);
+**回溯法**
+- [x] LeetCode 494 Target Sum
+- [x] LeetCode 78 Subsets
+- [x] LeetCode 90 Subsets II
+- [x] LeetCode 39 Combination Sum
+- [x] LeetCode 40 Combination Sum II
+- [x] LeetCode 46 Permutations （面试题38：字符串的排列）
+- [x] LeetCode 47 Permutations II
+- [x] LeetCode 131 Palindrome Partitioning
+- [x] leetcode 79. Word Search（面试题12 矩阵中的路径）
+- [x] 剑指offer  面试题13：机器人的运动范围
+
+**动态规划**
+- [x] LeetCode 70 Climbing Stairs
+- [x] LeetCode 62 Unique Paths
+- [x] LeetCode 63 Unique Paths II
+- [x] LeetCode 64 Minimum Path Sum(面试题47：礼物的最大价值)
+- [x] LeetCode 120 Triangle
+- [x] LeetCode 198 House Robber
+- [x] LeetCode 213 House Robber II
+- [x] LeetCode 279 Perfect Squares
+- [x] LeetCode 221 Maximal Square
+- [x] LeetCode 300 Longest Increasing Subsequence
+- [x] LeetCode 115 Distinct Subsequences
+- [x] LeetCode 5 Longest Palindromic Substring（最长回文子串）
+- [x] LeetCode 322 Coin Change
+- [x] LeetCode 72 Edit Distance
+- [x] LeetCode 403 Frog Jump
+- [x] LeetCode 354 Russian Doll Envelopes
+- [x] LeetCode 368 Largest Divisible Subset
+- [x] LeetCode 329 Longest Increasing Path in a Matrix
+（这道题我面实习时腾讯微信和微软都问过，好好掌握下，属于记忆化搜索，即DFS+剪枝）
+- [x] LeetCode 10 Regular Expression Matching（面试题19：正则表达式匹配）
+- [x] LeetCode 97 Interleaving String
+- [x] leetcode 121. Best Time to Buy and Sell Stock（面试题63：股票的最大利润）
+- [x] leetcode 91. Decode Ways(面试题46：把数字翻译成字符串)
+
+**贪心**
+贪心算法考的非常少，面试中非常少见，因为贪心算法的数学证明是很难的，短时间你不太可能证明出来，而且面试官也大概率证不出来，只有机试中才小概率会出贪心算法题，比如头条这种。所以做了以下这几个题就行。具体原因可以看一下这个链接：https://www.jiuzhang.com/qa/2100/
+- [x] LeetCode 55 Jump Game
+- [x] LeetCode 45  Jump Game II
+- [x] LeetCode 134 Gas Station
+- [x] LeetCode 135 Candy（变型：N个孩子站成一圈）
+
+**Math题**   一些trick题，考察数学和逻辑推理
+- [x] LintCode 365 Count 1 in Binary
+- [x] LintCode 1 A + B Problem（面试题65：不用加减乘除做加法）
+- [x] LintCode 3 Digit Counts（面试题43：1~n整数中1出现的次数）
+- [x] LintCode 379 Reorder array to construct the minimum number
+（面试题45：把数组排成最小的数）（leetcode 179. Largest Number）
+- [x] leetcode 400 Nth Digit（面试题44：数字序列中某一位的数字）
+- [x] 面试题15：二进制中1的个数
+- [x] 面试题62：圆圈中最后剩下的数
 
 
-            dfs(candidates, len, i + 1, residue - candidates[i], path, res);
-
-            path.removeLast();
-        }
-    }
-
-    public List<List<Integer>> combinationSum2(int[] candidates, int target) {
-        int len = candidates.length;
-        List<List<Integer>> res = new ArrayList<>();
-        if (len == 0) {
-            return res;
-        }
-
-        Arrays.sort(candidates);
-
-        Deque<Integer> path = new ArrayDeque<>(len);
-        dfs(candidates, len, 0, target, path, res);
-        return res;
-    }
-}
-```
-78 子集
-```
-//二进制
-class Solution {
-
-    public List<List<Integer>> subsets(int[] nums) {
-        List<List<Integer>> res = new ArrayList<List<Integer>>();
-        for (int i = 0; i < (1 << nums.length); i++) {
-            List<Integer> sub = new ArrayList<Integer>();
-            for (int j = 0; j < nums.length; j++)
-                if (((i >> j) & 1) == 1) sub.add(nums[j]);
-            res.add(sub);
-        }
-        return res;
-
-    }
-}
-```
-**86.分割链表**
-```
-class Solution {
-    public ListNode partition(ListNode head, int x) {
-        ListNode before_head = new ListNode(0);
-        ListNode before = before_head;
-        ListNode after_head = new ListNode(0);
-        ListNode after = after_head;
-
-        while (head != null) {
-
-            if (head.val < x) {
-                before.next = head;
-                before = before.next;
-            } else {
-                after.next = head;
-                after = after.next;
-            }
-
-            head = head.next;
-        }
-
-        after.next = null;
-
-        before.next = after_head.next;
-
-        return before_head.next;
-    }
-
-    
-}
-```
