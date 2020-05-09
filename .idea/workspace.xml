@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="133f8ea6-b8c5-4221-aa61-fdb0d7d73ae0" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/dictionaries/laijie.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/leetcode/Guide.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/leetcode/Guide.md" beforeDir="false" afterPath="$PROJECT_DIR$/leetcode/Guide.md" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -20,8 +18,8 @@
         <entry file="file://$PROJECT_DIR$/leetcode/Guide.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="-1756">
-                <caret line="146" lean-forward="true" selection-start-line="146" selection-end-line="146" />
+              <first_editor relative-caret-position="506">
+                <caret line="438" column="6" lean-forward="true" selection-start-line="438" selection-start-column="6" selection-end-line="438" selection-end-column="6" />
               </first_editor>
               <second_editor />
             </state>
@@ -151,12 +149,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1588945051589</updated>
-      <workItem from="1588945052992" duration="3747000" />
+      <workItem from="1588945052992" duration="7926000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="3747000" />
+    <option name="totallyTimeSpent" value="7926000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
@@ -183,8 +181,8 @@
       <window_info anchor="right" id="leetcode" side_tool="true" />
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Sequence" />
-      <window_info anchor="bottom" id="Terminal" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.12106017" />
+      <window_info active="true" anchor="bottom" id="Terminal" visible="true" weight="0.32992327" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.12106017" />
       <window_info anchor="right" id="Theme Preview" />
       <window_info id="Favorites" side_tool="true" />
       <window_info anchor="bottom" id="Find" order="1" />
@@ -205,8 +203,8 @@
     <entry file="file://$PROJECT_DIR$/leetcode/Guide.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="-1756">
-            <caret line="146" lean-forward="true" selection-start-line="146" selection-end-line="146" />
+          <first_editor relative-caret-position="506">
+            <caret line="438" column="6" lean-forward="true" selection-start-line="438" selection-start-column="6" selection-end-line="438" selection-end-column="6" />
           </first_editor>
           <second_editor />
         </state>

@@ -147,6 +147,13 @@ Reverse every K-element Sub-list (medium)
 
 
 7. Pattern: Tree Breadth First Search，树上的BFS
+
+这种模式基于宽搜（Breadth First Search (BFS)），适用于需要遍历一颗树。借助于队列数据结构，从而能保证树的节点按照他们的层数打印出来。打印完当前层所有元素，才能执行到下一层。所有这种需要遍历树且需要一层一层遍历的问题，都能用这种模式高效解决。
+
+这种树上的BFS模式是通过把根节点加到队列中，然后不断遍历直到队列为空。每一次循环中，我们都会把队头结点拿出来（remove），然后对其进行必要的操作。在删除每个节点的同时，其孩子节点，都会被加到队列中。
+
+识别树上的BFS模式： 如果你被问到去遍历树，需要按层操作的方式（也称作层序遍历）
+
 经典题目：
 
 Binary Tree Level Order Traversal (easy)
@@ -166,6 +173,17 @@ Connect Level Order Siblings (medium)
 
 
 8. Pattern: Tree Depth First Search，树上的DFS
+
+树形DFS基于深搜（Depth First Search (DFS)）技术来实现树的遍历。 咱们可以用递归（或是显示栈，如果你想用迭代方式的话）来记录遍历过程中访问过的父节点。
+
+该模式的运行方式是从根节点开始，如果该节点不是叶子节点，我们需要干三件事： 需要区别我们是先处理根节点（pre-order，前序），处理孩子节点之间处理根节点（in-order，中序），还是处理完所有孩子再处理根节点（post-order，后序）。
+
+递归处理当前节点的左右孩子。
+
+识别树形DFS： 
+- 你需要按前中后序的DFS方式遍历树 
+- 如果该问题的解一般离叶子节点比较近
+
 经典题目：
 
 Binary Tree Path Sum (easy)
@@ -181,6 +199,16 @@ Count Paths for a Sum (medium)
 
 
 9. Pattern: Two Heaps，双堆类型
+
+很多问题中，我们被告知，我们拿到一大把可以分成两队的数字。为了解决这个问题，我们感兴趣的是，怎么把数字分成两半？使得：小的数字都放在一起，大的放在另外一半。双堆模式就能高效解决此类问题。
+
+正如名字所示，该模式用到了两个堆，是不是很难猜？一个最小堆用来找最小元素；一个最大堆，拿到最大元素。这种模式将一半的元素放在最大堆中，这样你可以从这一堆中秒找到最大元素。同理，把剩下一半丢到最小堆中，O(1)时间找到他们中的最小元素。通过这样的方式，这一大堆元素的中位数就可以从两个堆的堆顶拿到数字，从而计算出来。
+
+判断双堆模式的秘诀： 
+- 这种模式在优先队列，计划安排问题（Scheduling）中有奇效 
+- 如果问题让你找一组数中的最大/最小/中位数 
+- 有时候，这种模式在涉及到二叉树数据结构时也特别有用
+
 经典题目：
 
 Find the Median of a Number Stream (medium)
@@ -192,6 +220,26 @@ Maximize Capital (hard)
 
 
 10. Pattern: Subsets，子集类型，一般都是使用多重DFS
+
+超级多的编程面试问题都会涉及到排列和组合问题。子集问题模式讲的是用BFS来处理这些问题。
+
+这个模式是这样的： 给一组数字 [1, 5, 3] 
+
+我们从空集开始：[[]] 
+
+把第一个数（1），加到之前已经存在的集合中：[[], [1]]; 
+
+把第二个数（5），加到之前的集合中得到：[[], [1], [5], [1,5]]; 
+
+再加第三个数（3），则有：[[], [1], [5], [1,5], [3], [1,3], [5,3], [1,5,3]]. 
+
+该模式的详细步骤如下：
+
+![subset](../image/subset.jpg)
+
+如果判断这种子集模式：
+- 问题需要咱们去找数字的组合或是排列
+
 经典题目：
 
 Subsets (easy)
@@ -209,6 +257,24 @@ Unique Generalized Abbreviations (hard)
 
 
 11. Pattern: Modified Binary Search，改造过的二分
+
+当你需要解决的问题的输入是排好序的数组，链表，或是排好序的矩阵，要求咱们寻找某些特定元素。这个时候的不二选择就是二分搜索。这种模式是一种超级牛的用二分来解决问题的方式。
+
+对于一组满足上升排列的数集来说，这种模式的步骤是这样的：
+
+首先，算出左右端点的中点。最简单的方式是这样的：middle = (start + end) / 2。但这种计算方式有不小的概率会出现整数越界。因此一般都推荐另外这种写法：middle = start + (end — start) / 2 
+
+如果要找的目标改好和中点所在的数值相等，我们返回中点的下标就行 
+
+如果目标不等的话：我们就有两种移动方式了 
+
+如果目标比中点在的值小（key < arr[middle]）：将下一步搜索空间放到左边（end = middle - 1）
+
+如果比中点的值大，则继续在右边搜索，丢弃左边：left = middle + 1
+
+![divide](../image/two-divide.jpg)
+
+
 经典题目：
 
 Order-agnostic Binary Search (easy)
@@ -228,6 +294,26 @@ Bitonic Array Maximum (easy)
 
 
 12. Pattern: Top ‘K’ Elements，前K个系列
+
+任何让我们求解最大/最小/最频繁的K个元素的题，都遵循这种模式。
+
+用来记录这种前K类型的最佳数据结构就是堆了（译者注：在Java中，改了个名，叫优先队列（PriorityQueue））。
+
+这种模式借助堆来解决很多这种前K个数值的问题。
+ 
+这个模式是这样的：
+
+根据题目要求，将K个元素插入到最小堆或是最大堆。 遍历剩下的还没访问的元素，如果当前出来到的这个元素比堆顶元素大，那咱们把堆顶元素先删除，再加当前元素进去。
+
+![priority_queue](../image/priority_queue.jpg)
+
+注意这种模式下，咱们不需要去排序数组，因为堆具有这种良好的局部有序性，这对咱们需要解决问题就够了。
+
+识别最大K个元素模式： 
+- 如果你需要求最大/最小/最频繁的前K个元素 
+- 如果你需要通过排序去找一个特定的数
+
+
 经典题目：
 
 Top ‘K’ Numbers (easy)
@@ -255,6 +341,25 @@ Rearrange String (hard)
 
 
 13. Pattern: K-way merge，多路归并
+
+K路归并能帮咱们解决那些涉及到多组排好序的数组的问题。
+
+每当你的输入是K个排好序的数组，你就可以用堆来高效顺序遍历其中所有数组的所有元素。你可以将每个数组中最小的一个元素加入到最小堆中，从而得到全局最小值。当我们拿到这个全局最小值之后，再从该元素所在的数组里取出其后面紧挨着的元素，加入堆。如此往复直到处理完所有的元素。
+
+![k-way-merge](../image/k-way-merge.jpg)
+
+该模式是这样的运行的：
+
+1. 把每个数组中的第一个元素都加入最小堆中 
+2. 取出堆顶元素（全局最小），将该元素放入排好序的结果集合里面
+3. 将刚取出的元素所在的数组里面的下一个元素加入堆 
+4. 重复步骤2，3，直到处理完所有数字
+
+识别K路归并：
+- 该问题的输入是排好序的数组，链表或是矩阵 
+- 如果问题让咱们合并多个排好序的集合，或是需要找这些集合中最小的元素
+
+
 经典题目：
 
 Merge K Sorted Lists (medium)
@@ -268,6 +373,7 @@ Smallest Number Range (Hard)
 
 
 14. Pattern: 0/1 Knapsack (Dynamic Programming)，0/1背包类型
+
 经典题目：
 
 0/1 Knapsack (medium)
@@ -281,6 +387,43 @@ Minimum Subset Sum Difference (hard)
 
 
 15. Pattern: Topological Sort (Graph)，拓扑排序类型
+
+拓扑排序模式用来寻找一种线性的顺序，这些元素之间具有依懒性。比如，如果事件B依赖于事件A，那A在拓扑排序顺序中排在B的前面。
+ 
+这种模式定义了一种简单方式来理解拓扑排序这种技术。
+ 
+这种模式是这样奏效的： 
+初始化 
+
+a) 借助于HashMap将图保存成邻接表形式。 
+b) 找到所有的起点，用HashMap来帮助记录每个节点的入度 
+
+创建图，找到每个节点的入度 
+
+a) 利用输入，把图建好，然后遍历一下图，将入度信息记录在HashMap中
+
+找所有的起点 
+
+a) 所有入度为0的节点，都是有效的起点，而且我们讲他们都加入到一个队列中 
+
+排序 
+
+a) 对每个起点，执行以下步骤 
+    1. 把它加到结果的顺序中 
+    2. 将其在图中的孩子节点取到 
+    3. 将其孩子的入度减少1 
+    4. 如果孩子的入度变为0，则改孩子节点成为起点，将其加入队列中
+    
+ b) 重复（a）过程，直到起点队列为空。
+
+![tuopu](../image/tuopu.jpg)
+
+拓扑排序模式识别：
+ 
+- 待解决的问题需要处理无环图
+- 你需要以一种有序的秩序更新输入元素
+- 需要处理的输入遵循某种特定的顺序
+
 经典题目：
 
 Topological Sort (medium)
@@ -292,3 +435,87 @@ Tasks Scheduling Order (medium)
 All Tasks Scheduling Orders (hard)
 
 Alien Dictionary (hard)
+
+**DP**
+1. 0/1 Knapsack, 0/1背包，6个题
+0/1 Knapsack，0/1背包问题
+
+Equal Subset Sum Partition，相等子集划分问题
+
+Subset Sum，子集和问题
+
+Minimum Subset Sum Difference，子集和的最小差问题
+
+Count of Subset Sum，相等子集和的个数问题
+
+Target Sum，寻找目标和的问题
+
+
+
+2. Unbounded Knapsack，无限背包，5个题
+Unbounded Knapsack，无限背包
+
+Rod Cutting，切钢条问题
+
+Coin Change，换硬币问题
+
+Minimum Coin Change，凑齐每个数需要的最少硬币问题
+
+Maximum Ribbon Cut，丝带的最大值切法
+
+
+
+3. Fibonacci Numbers，斐波那契数列，6个题
+Fibonacci numbers，斐波那契数列问题
+
+Staircase，爬楼梯问题
+
+Number factors，分解因子问题
+
+Minimum jumps to reach the end，蛙跳最小步数问题
+
+Minimum jumps with fee，蛙跳带有代价的问题
+
+House thief，偷房子问题
+
+
+
+4. Palindromic Subsequence，回文子系列，5个题
+Longest Palindromic Subsequence，最长回文子序列
+
+Longest Palindromic Substring，最长回文子字符串
+
+Count of Palindromic Substrings，最长子字符串的个数问题
+
+Minimum Deletions in a String to make it a Palindrome，怎么删掉最少字符构成回文
+
+Palindromic Partitioning，怎么分配字符，形成回文
+
+
+
+5. Longest Common Substring，最长子字符串系列，13个题
+Longest Common Substring，最长相同子串
+
+Longest Common Subsequence，最长相同子序列
+
+Minimum Deletions & Insertions to Transform a String into another，字符串变换
+
+Longest Increasing Subsequence，最长上升子序列
+
+Maximum Sum Increasing Subsequence，最长上升子序列和
+
+Shortest Common Super-sequence，最短超级子序列
+
+Minimum Deletions to Make a Sequence Sorted，最少删除变换出子序列
+
+Longest Repeating Subsequence，最长重复子序列
+
+Subsequence Pattern Matching，子序列匹配
+
+Longest Bitonic Subsequence，最长字节子序列
+
+Longest Alternating Subsequence，最长交差变换子序列
+
+Edit Distance，编辑距离
+
+Strings Interleaving，交织字符串
