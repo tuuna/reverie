@@ -1,3 +1,5 @@
+
+
 wiredTiger通过Btree管理数据，B树的数据结构如下图。
 
 

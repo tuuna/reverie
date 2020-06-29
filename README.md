@@ -26,93 +26,92 @@
 **排序**
 重点：快速排序、归并排序、堆排序（面试问排序基本就是这三个，理解并背熟）
 一般：冒泡排序、选择排序、插入排序、拓扑排序
-- [ ] LintCode 463 Sort Integers（用冒泡排序、选择排序、插入排序都实现一遍）
+- [x] LintCode 463 Sort Integers（用冒泡排序、选择排序、插入排序都实现一遍）
 
-- [ ] LeetCode 148 Sort List（链表排序，最简单是用归并排序做，有余力可以尝试快速排序来做）
-- [ ] LeetCode 215 Kth Largest Element in an Array（方法1：堆 方法二：快速排序（推荐））
+- [x] LeetCode 148 Sort List（链表排序，最简单是用归并排序做，有余力可以尝试快速排序来做）
+- [x] LeetCode 215 Kth Largest Element in an Array（方法1：堆 方法二：快速排序（推荐））
 （面试题40：最小的k个数）
-- [ ] LeetCode 347 Top K Frequent Elements（堆排序、桶排序）
-- [ ] LintCode 532 Reverse Pairs（归并排序的应用）（面试题51：数组中的逆序对）
-- [ ] LeetCode 315 Count of Smaller Numbers After Self（归并排序的应用）
-- [ ] LeetCode 207 Course Schedule （拓扑排序）
-- [ ] LeetCode 210 Course Schedule II（拓扑排序）
-- [ ] leetcode 56 Merge Intervals (合并n个区间)
+- [x] LeetCode 347 Top K Frequent Elements（堆排序、桶排序）
+- [x] LintCode 532 Reverse Pairs（归并排序的应用）（面试题51：数组中的逆序对）
+- [x] LeetCode 315 Count of Smaller Numbers After Self（归并排序的应用）
+- [x] LeetCode 207 Course Schedule （拓扑排序）
+- [x] LeetCode 210 Course Schedule II（拓扑排序）
+- [x] leetcode 56 Merge Intervals (合并n个区间)
 
 **数组**
-- [ ] 442. Find All Duplicates in an Array(面试题3：数组中重复的数字)
-- [ ] leetcode 387. First Unique Character in a String（面试题50：第一个只出现一次的字符）
-- [ ] LeetCode 189 Rotate Array（翻转数组）(面试题58：翻转字符串)
-- [ ] LintCode 31 Partition Array（快速排序中的一次partition）
-- [ ] LintCode 373 Partition Array by Odd and Even（快速排序中的一次partition）
-- [ ] LintCode 144 Interleaving Positive and Negative Numbers（快速排序中的一次partition）
-- [ ] LeetCode 54 Spiral Matrix（面试题29 顺时针打印矩阵）
-- [ ] LeetCode 59 Spiral Matrix II
-- [ ] LeetCode 53 Maximum Subarray（DP）（面试题42：连续子数组的最大和）
-- [ ] LeetCode 152 Maximum Product Subarray（DP）
-- [ ] LintCode 138 Subarray Sum（子数组之和 = 0，hashmap、空间换时间）
-- [ ] LintCode 139 Subarray Sum Closest（排序）
-- [ ] LeetCode 136 Single Number（位操作、异或）
-- [ ] LeetCode 137 Single Number II（位操作、通用解法）
-- [ ] LeetCode 260 Single Number III（位操作）（面试题56：数组中数字出现的次数）
-- [ ] LeetCode 263 Ugly Number
-- [ ] LeetCode 264 Ugly Number II（面试题49：丑数）
-- [ ] LeetCode 295 Find Median from Data Stream（数据流中位数，设计、最大堆、最小堆）
+- [x] 442. Find All Duplicates in an Array(面试题3：数组中重复的数字)
+- [x] leetcode 387. First Unique Character in a String（面试题50：第一个只出现一次的字符）
+- [x] LeetCode 189 Rotate Array（翻转数组）(面试题58：翻转字符串)
+- [x] LintCode 31 Partition Array（快速排序中的一次partition）
+- [x] LintCode 373 Partition Array by Odd and Even（快速排序中的一次partition）
+- [x] LintCode 144 Interleaving Positive and Negative Numbers（快速排序中的一次partition）
+- [x] LeetCode 54 Spiral Matrix（面试题29 顺时针打印矩阵）
+- [x] LeetCode 59 Spiral Matrix II
+- [x] LeetCode 53 Maximum Subarray（DP）（面试题42：连续子数组的最大和）
+- [x] LeetCode 152 Maximum Product Subarray（DP）
+- [x] LintCode 138 Subarray Sum（子数组之和 = 0，hashmap、空间换时间）
+- [x] LintCode 139 Subarray Sum Closest（排序）
+- [x] LeetCode 136 Single Number（位操作、异或）
+- [x] LeetCode 137 Single Number II（位操作、通用解法）
+- [x] LeetCode 260 Single Number III（位操作）（面试题56：数组中数字出现的次数）
+- [x] LeetCode 263 Ugly Number
+- [x] LeetCode 264 Ugly Number II（面试题49：丑数）
+- [x] LeetCode 295 Find Median from Data Stream（数据流中位数，设计、最大堆、最小堆）
 （面试题41：数据流中的中位数）
-- [ ] LeetCode 480 Sliding Window Median（滑动窗口中位数，最大堆、最小堆）
-- [ ] LeetCode 239 Sliding Window Maximum（双端队列）（面试题59：队列的最大值）
-- [ ] LeetCode 128 Longest Consecutive Sequence（hashset、空间换时间）
-- [ ] LeetCode 169 Majority Element（面试题39：数组中出现次数超过一半的数字）
+- [x] LeetCode 480 Sliding Window Median（滑动窗口中位数，最大堆、最小堆）
+- [x] LeetCode 239 Sliding Window Maximum（双端队列）（面试题59：队列的最大值）
+- [x] LeetCode 128 Longest Consecutive Sequence（hashset、空间换时间）
+- [x] LeetCode 169 Majority Element（面试题39：数组中出现次数超过一半的数字）
 
 **双指针**
 使用双指针一般需要数组是有序的
-- [ ] LeetCode 392 Is Subsequence（双指针）
-- [ ] LeetCode 1 Two Sum （两个数字之和=target，hashmap，空间换时间）
-- [ ] leetcode 167 Two Sum II - Input array is sorted(面试题57：和为s的数字)
-- [ ] LeetCode 15 3Sum （排序+双指针）
-- [ ] LeetCode 16 3Sum Closest
-- [ ] LeetCode 18 4Sum
-- [ ] leetcode 3 Longest Substring Without Repeating Characters
+- [x] LeetCode 392 Is Subsequence（双指针）
+- [x] LeetCode 1 Two Sum （两个数字之和=target，hashmap，空间换时间）
+- [x] leetcode 167 Two Sum II - Input array is sorted(面试题57：和为s的数字)
+- [x] LeetCode 15 3Sum （排序+双指针）
+- [x] LeetCode 16 3Sum Closest
+- [x] LeetCode 18 4Sum
+- [x] leetcode 3 Longest Substring Without Repeating Characters
 （面试题48：最长不含重复字符的子字符串）（hashmap 加双指针（滑动窗口））
-- [ ] LeetCode 42 Trapping Rain Water
+- [x] LeetCode 42 Trapping Rain Water
 
 **链表**
 链表题没什么好说的，就是一些指针的操作，注意以下两点就行
-7.  当你预估到返回的链表头结点可能跟原有的链表头节点不一样时，建一个虚拟节点dummy，值任意，比如0，最后返回的新的链表头结点就是dummy.next，这一条非常好用！
-8.  当操作一个链表节点的时候，时刻想一想要访问的链表节点是否为null
-- [ ] LeetCode 206 Reverse Linked List（递归、迭代）（面试题24 反转链表）
-- [ ] 面试题6  从尾到头打印链表
-- [ ] LeetCode 92 Reverse Linked List II
-- [ ] LeetCode 86 Partition List （LeetCode 328 Odd Even Linked List 一样）
-- [ ] LeetCode 83 Remove Duplicates from Sorted List
-- [ ] LeetCode 82 Remove Duplicates from Sorted List II
-- [ ] LeetCode 237 Delete Node in a Linked List（面试题18 删除链表的节点）
-- [ ] LeetCode 19 Remove Nth Node From End of List（面试题22：链表中倒数第k个节点）
-- [ ] LeetCode 203 Remove Linked List Elements
-- [ ] LeetCode 61 Rotate List
-- [ ] LeetCode 2 Add Two Numbers
-- [ ] LeetCode 445 Add Two Numbers II
-- [ ] LeetCode 234 Palindrome Linked List
-- [ ] LeetCode 24 Swap Nodes in Pairs
-- [ ] LeetCode 160 Intersection of Two Linked Lists（面试题52：两个链表的第一个公共结点）
-- [ ] LeetCode 141 Linked List Cycle（面试题23：链表中环的入口节点）
-- [ ] LeetCode 142 Linked List Cycle II
-- [ ] LeetCode 21 Merge Two Sorted Lists（面试题25：合并两个排序的链表）
-- [ ] LeetCode 23 Merge k Sorted Lists（变型：N个倒序链表合并）
-- [ ] LeetCode 138 Copy List with Random Pointer（面试题35：复杂链表的复制）
-- [ ] LeetCode 25 Reverse Nodes in k-Group
-- [ ] LeetCode 143 Reorder List
-- [ ] LeetCode 146 LRU Cache（非常重要的一道题，双链表 + HashMap解决）（LinkedHashMap）
+
+- [x] LeetCode 206 Reverse Linked List（递归、迭代）（面试题24 反转链表）
+- [x] 面试题6  从尾到头打印链表
+- [x] LeetCode 92 Reverse Linked List II
+- [x] LeetCode 86 Partition List （LeetCode 328 Odd Even Linked List 一样）
+- [x] LeetCode 83 Remove Duplicates from Sorted List
+- [x] LeetCode 82 Remove Duplicates from Sorted List II
+- [x] LeetCode 237 Delete Node in a Linked List（面试题18 删除链表的节点）
+- [x] LeetCode 19 Remove Nth Node From End of List（面试题22：链表中倒数第k个节点）
+- [x] LeetCode 203 Remove Linked List Elements
+- [x] LeetCode 61 Rotate List
+- [x] LeetCode 2 Add Two Numbers
+- [x] LeetCode 445 Add Two Numbers II
+- [x] LeetCode 234 Palindrome Linked List
+- [x] LeetCode 24 Swap Nodes in Pairs
+- [x] LeetCode 160 Intersection of Two Linked Lists（面试题52：两个链表的第一个公共结点）
+- [x] LeetCode 141 Linked List Cycle（面试题23：链表中环的入口节点）
+- [x] LeetCode 142 Linked List Cycle II
+- [x] LeetCode 21 Merge Two Sorted Lists（面试题25：合并两个排序的链表）
+- [x] LeetCode 23 Merge k Sorted Lists（变型：N个倒序链表合并）
+- [x] LeetCode 138 Copy List with Random Pointer（面试题35：复杂链表的复制）
+- [x] LeetCode 25 Reverse Nodes in k-Group
+- [x] LeetCode 143 Reorder List
+- [x] LeetCode 146 LRU Cache（非常重要的一道题，双链表 + HashMap解决）（LinkedHashMap）
 
 **二分**
-- [ ] LeetCode 35 Search Insert Position
-- [ ] LeetCode 34 Find First and Last Position of Element in Sorted Array(面试题53：数字在排序数组中出现的次数 )
-- [ ] LeetCode 162 Find Peak Element
+- [x] LeetCode 35 Search Insert Position
+- [x] LeetCode 34 Find First and Last Position of Element in Sorted Array(面试题53：数字在排序数组中出现的次数 )
+- [x] LeetCode 162 Find Peak Element
 一个先递增后递减的序列，允许有重复值，找出最大值（和162题一样解法）
-- [ ] LeetCode 74 Search a 2D Matrix
-- [ ] LeetCode 240 Search a 2D Matrix II（面试题4：二维数组中的查找）
-- [ ] LeetCode 153 Find Minimum in Rotated Sorted Array
-- [ ] LeetCode 154 Find Minimum in Rotated Sorted Array II
-- [ ] LeetCode 33 Search in Rotated Sorted Array（面试题11 旋转数组的最小值）
+- [x] LeetCode 74 Search a 2D Matrix
+- [x] LeetCode 240 Search a 2D Matrix II（面试题4：二维数组中的查找）
+- [x] LeetCode 153 Find Minimum in Rotated Sorted Array
+- [x] LeetCode 154 Find Minimum in Rotated Sorted Array II
+- [x] LeetCode 33 Search in Rotated Sorted Array（面试题11 旋转数组的最小值）
 - [ ] LeetCode 81 Search in Rotated Sorted Array II
 - [ ] LeetCode 378 Kth Smallest Element in a Sorted Matrix
 （二维矩阵、每行每列都有序，找到第k个大）
