@@ -2764,6 +2764,41 @@ public class Solution {
 
 #### 5. **单例模式： 懒汉+恶汉+静态内部类+双重校验锁**
 
+```java
+//final不允许被继承
+public final class SingletonDoubleCheck {
+ //实例变量
+ private byte[] data = new byte[1024];
+
+ //定义实例，但是不直接初始化
+ private static volatile SingletonDoubleCheck instance = null;
+
+ Connection con;
+ Socket socket;
+
+ //私有化构造函数，不允许外部NEW
+ private SingletonDoubleCheck() {
+     this.con = con;//初始化
+     this.socket = socket;//初始化
+
+ }
+
+ public static SingletonDoubleCheck getInstance() {
+     //当instance为null时，进入同步代码块，同时该判断避免了每次都需要进入同步代码块，可以提高效率
+     if (null == instance) {
+         //只有一个线程能够获得SingletonDoubleCheck.class关联的monitor
+         synchronized (SingletonDoubleCheck.class) {
+             //判断如果instance为null则创建
+             if (null == instance) {
+                 instance = new SingletonDoubleCheck();
+             }
+         }
+     }
+     return instance;
+ }
+}
+```
+
 #### 6. **生产者消费者模式： wait/notify 、BlockingQueue 实现**
 
 #### 7. **多个线程交替打印： 锁、信号量 Semaphore 实现**
@@ -2788,9 +2823,250 @@ public class Solution {
 
 #### 1. LRU
 
+```java
+package high_frequent;
+
+
+import java.util.HashMap;
+
+public class LRU {
+
+    class LinkedNode {
+        int key;
+        int value;
+        LinkedNode prev;
+        LinkedNode next;
+        public LinkedNode(){}
+        public LinkedNode(int k, int v) {key = k; value = v;}
+    }
+
+    //容量
+    private int capacity;
+    //当前大小
+    private int size;
+    //新建hashmap存储LRU
+    private HashMap<Integer, LinkedNode> hashmap;
+    //头结点,尾结点
+    private LinkedNode head, tail;
+
+    //init
+    public LRU(int capacity) {
+        this.capacity = capacity;
+        this.size = 0;
+        hashmap = new HashMap<>();
+        head = new LinkedNode();
+        tail = new LinkedNode();
+        head.next = tail;
+        tail.prev = head;
+    }
+
+    //get LRU
+    public int get(int key) {
+        if (!hashmap.containsKey(key)) {
+            return -1;
+        }
+        LinkedNode value = hashmap.get(key);
+        moveToHead(value);
+        return value.value;
+    }
+
+    //put LRU
+    public void put(int key, int value) {
+        LinkedNode newNode = new LinkedNode(key, value);
+        if (hashmap.containsKey(key)) {
+            hashmap.put(key, newNode);
+            moveToHead(newNode);
+        } else {
+            if (size > capacity) {
+                moveLast(newNode);
+                putNewNode(newNode);
+            } else {
+                putNewNode(newNode);
+                size++;
+            }
+        }
+    }
+
+    public void moveToHead(LinkedNode value) {
+        LinkedNode cur = value;
+        cur.next = head.next;
+        cur.prev.next = tail;
+        tail.prev = cur.prev.next;
+        cur.prev = head;
+    }
+
+    public void moveLast(LinkedNode value) {
+
+    }
+
+    public void putNewNode(LinkedNode value) {
+
+    }
+
+
+}
+
+```
+
+
+
 #### 2. LFU
 
 #### 3. SkipList
 
+```java
+package high_frequent;
+
+import java.util.Random;
+
+class skipList {
+    class SkipListNode {
+        int val;
+        int cnt;  // 当前val出现的次数
+        SkipListNode[] levels;  // start from 0
+        SkipListNode() {
+            levels = new SkipListNode[MAX_LEVEL];
+        }
+    }
+
+    private double p = 0.5;
+    private int MAX_LEVEL = 16;
+    private SkipListNode head;  // 头结点
+    private int level;  //
+    private Random random;
+
+    public skipList() {
+        // 保存此level有利于查询（以及其他操作）
+        level = 0;  // 当前 skiplist的高度（所有数字 level数最大的）
+        head = new SkipListNode();
+        random = new Random();
+    }
+    // 返回target是否存在于跳表中
+    public boolean search(int target) {
+        SkipListNode curNode = head;
+        for (int i = level-1; i >= 0; i--) {
+            while (curNode.levels[i] != null && curNode.levels[i].val < target) {
+                curNode = curNode.levels[i];
+            }
+        }
+        curNode = curNode.levels[0];
+        return (curNode != null && curNode.val == target);
+    }
+    // 插入一个元素到跳表。
+    public void add(int num) {
+        SkipListNode curNode = head;
+        // 记录每层能访问的最右节点
+        SkipListNode[] levelTails = new SkipListNode[MAX_LEVEL];
+        for (int i = level-1; i >= 0; i--) {
+            while (curNode.levels[i] != null && curNode.levels[i].val < num) {
+                curNode = curNode.levels[i];
+            }
+            levelTails[i] = curNode;
+        }
+        curNode = curNode.levels[0];
+        if (curNode != null && curNode.val == num) {
+            // 已存在，cnt 加1
+            curNode.cnt++;
+        } else {
+            // 插入
+            int newLevel = randomLevel();
+            if (newLevel > level) {
+                for (int i = level; i < newLevel; i++) {
+                    levelTails[i] = head;
+                }
+                level = newLevel;
+            }
+            SkipListNode newNode = new SkipListNode();
+            newNode.val = num;
+            newNode.cnt = 1;
+            for (int i = 0; i < level; i++) {
+                newNode.levels[i] = levelTails[i].levels[i];
+                levelTails[i].levels[i] = newNode;
+
+            }
+        }
+    }
+
+    private int randomLevel() {
+        int level = 1;  // 注意思考此处为什么是 1 ？
+        while (random.nextDouble() < p && level < MAX_LEVEL) {
+            level++;
+        }
+        return level > MAX_LEVEL ? MAX_LEVEL : level;
+    }
+    // 在跳表中删除一个值，如果 num 不存在，直接返回false. 如果存在多个 num ，删除其中任意一个即可。
+    public boolean erase(int num) {
+        SkipListNode curNode = head;
+        // 记录每层能访问的最右节点
+        SkipListNode[] levelTails = new SkipListNode[MAX_LEVEL];
+
+        for (int i = level-1; i >= 0; i--) {
+            while (curNode.levels[i] != null && curNode.levels[i].val < num) {
+                curNode = curNode.levels[i];
+            }
+            levelTails[i] = curNode;
+        }
+        curNode = curNode.levels[0];
+        if (curNode != null && curNode.val == num) {
+            if (curNode.cnt > 1) {
+                curNode.cnt--;
+                return true;
+            }
+            // 存在，删除
+            for (int i = 0; i < level; i++) {
+                if (levelTails[i].levels[i] != curNode) {
+                    break;
+                }
+                levelTails[i].levels[i] = curNode.levels[i];
+            }
+            while (level > 0 && head.levels[level-1] == null) {
+                level--;
+            }
+            return true;
+        }
+        return false;
+    }
+}
+
+```
+
+
+
 #### 4. 快速排序、归并排序、桶排序、冒泡排序
+
+```java
+import java.util.Scanner;
+public class Main {
+    public static void main(String[] args) {
+        //Scanner in = new Scanner(System.in);
+        //int a = in.nextInt();
+        //System.out.println(a);
+        int[] nums = {1,3,5,2,3,6,7,8,34,23,13,24,45,34,13,67,3,2,1,5,89};
+        quickSort(nums, 0, nums.length - 1);
+        for(int num : nums) {
+            System.out.println(num);
+        }
+    }
+    
+    public static void quickSort(int[] nums, int start, int end) {
+        if(start >= end) return;
+        int base = nums[start];
+        int i = start, j = end;
+        while(i < j) {
+            while(i < j && nums[j] >= base) j--;
+            while(i < j && nums[i] <= base) i++;
+            if(i < j) {
+                int temp = nums[i];
+                nums[i] = nums[j];
+                nums[j] = temp;
+            }
+        }
+        nums[start] = nums[i];
+        nums[i] = base;
+        
+        quickSort(nums, start, i-1);
+        quickSort(nums, i + 1, end);
+    }
+}
+```
 
