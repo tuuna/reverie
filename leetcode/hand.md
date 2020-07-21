@@ -321,6 +321,8 @@ class Solution {
 
 #### 12. 需要排序的最短子数组长度
 
+
+
 #### 13. 最长的可整合子数组的长度
 
 #### 14. 最短无序连续子数组
@@ -775,17 +777,355 @@ class Solution {
 }
 ```
 
-#### 5. 字符串的翻转和旋转及其应用
+#### 5. 字符串旋转及其应用
+
+```java
+class Solution {
+    public String reverseLeftWords(String s, int n) {
+        StringBuilder res = new StringBuilder();
+        for(int i = n; i < n + s.length(); i++)
+            res.append(s.charAt(i % s.length()));
+        return res.toString();
+    }
+}
+//最简单是直接subString
+```
 
 #### 6. 字符串解码
 
+```java
+/*
+构建辅助栈 stack， 遍历字符串 s 中每个字符 c；
+1. 当 c 为数字时，将数字字符转化为数字 multi，用于后续倍数计算；
+2. 当 c 为字母时，在 res 尾部添加 c；
+3. 当 c 为 [ 时，将当前 multi 和 res 入栈，并分别置空置 00：
+		- 记录此 [ 前的临时结果 res 至栈，用于发现对应 ] 后的拼接操作；
+	  - 记录此 [ 前的倍数 multi 至栈，用于发现对应 ] 后，获取 multi × [...] 字符串。
+ 		- 进入到新 [ 后，res 和 multi 重新记录。
+4. 当 c 为 ] 时，stack 出栈，拼接字符串 res = last_res + cur_multi * res，其中:
+		- last_res是上个 [ 到当前 [ 的字符串，例如 "3[a2[c]]" 中的 a；
+		- cur_multi是当前 [ 到 ] 内字符串的重复倍数，例如 "3[a2[c]]" 中的 2。
+返回字符串 res。
+*/
+//辅助栈
+class Solution {
+    public String decodeString(String s) {
+        StringBuilder res = new StringBuilder();
+        int multi = 0;
+        LinkedList<Integer> stack_multi = new LinkedList<>();
+        LinkedList<String> stack_res = new LinkedList<>();
+        for(Character c : s.toCharArray()) {
+            if(c == '[') {
+                stack_multi.addLast(multi);
+                stack_res.addLast(res.toString());
+                multi = 0;
+                res = new StringBuilder();
+            }
+            else if(c == ']') {
+                StringBuilder tmp = new StringBuilder();
+                int cur_multi = stack_multi.removeLast();
+                for(int i = 0; i < cur_multi; i++) tmp.append(res);
+                res = new StringBuilder(stack_res.removeLast() + tmp);
+            }
+            else if(c >= '0' && c <= '9') multi = multi * 10 + Integer.parseInt(c + "");
+            else res.append(c);
+        }
+        return res.toString();
+    }
+}
+//递归
+class Solution {
+    public String decodeString(String s) {
+        return dfs(s, 0)[0];
+    }
+    private String[] dfs(String s, int i) {
+        StringBuilder res = new StringBuilder();
+        int multi = 0;
+        while(i < s.length()) {
+            if(s.charAt(i) >= '0' && s.charAt(i) <= '9') 
+                multi = multi * 10 + Integer.parseInt(String.valueOf(s.charAt(i))); 
+            else if(s.charAt(i) == '[') {
+                String[] tmp = dfs(s, i + 1);
+                i = Integer.parseInt(tmp[0]);
+                while(multi > 0) {
+                    res.append(tmp[1]);
+                    multi--;
+                }
+            }
+            else if(s.charAt(i) == ']') 
+                return new String[] { String.valueOf(i), res.toString() };
+            else 
+                res.append(String.valueOf(s.charAt(i)));
+            i++;
+        }
+        return new String[] { res.toString() };
+    } 
+}
+```
+
 #### 7. 无重复字符的最长子串
+
+```java
+//滑动窗口
+class Solution {
+    public int lengthOfLongestSubstring(String s) {
+        if (s.length()==0) return 0;
+        HashMap<Character, Integer> map = new HashMap<Character, Integer>();
+        int max = 0;
+        int left = 0;
+        for(int i = 0; i < s.length(); i ++){
+            if(map.containsKey(s.charAt(i))){
+                left = Math.max(left,map.get(s.charAt(i)) + 1);
+            }
+            map.put(s.charAt(i),i);
+            max = Math.max(max,i-left+1);
+        }
+        return max;
+        
+    }
+}
+```
 
 #### 8. 字符串的最长公共子串和最长公共子序列
 
 #### 9. 请实现一个函数用来判断字符串是否表示数值
 
 #### 10. 判断一个字符串是否是一个合法的 IPV4
+
+#### 11. 最长回文子串
+
+```java
+//中心扩散
+public class Solution {
+
+    public String longestPalindrome(String s) {
+        int len = s.length();
+        if (len < 2) {
+            return s;
+        }
+        int maxLen = 1;
+        String res = s.substring(0, 1);
+        // 中心位置枚举到 len - 2 即可
+        for (int i = 0; i < len - 1; i++) {
+            String oddStr = centerSpread(s, i, i);
+            String evenStr = centerSpread(s, i, i + 1);
+            String maxLenStr = oddStr.length() > evenStr.length() ? oddStr : evenStr;
+            if (maxLenStr.length() > maxLen) {
+                maxLen = maxLenStr.length();
+                res = maxLenStr;
+            }
+        }
+        return res;
+    }
+
+    private String centerSpread(String s, int left, int right) {
+        // left = right 的时候，此时回文中心是一个字符，回文串的长度是奇数
+        // right = left + 1 的时候，此时回文中心是一个空隙，回文串的长度是偶数
+        int len = s.length();
+        int i = left;
+        int j = right;
+        while (i >= 0 && j < len) {
+            if (s.charAt(i) == s.charAt(j)) {
+                i--;
+                j++;
+            } else {
+                break;
+            }
+        }
+        // 这里要小心，跳出 while 循环时，恰好满足 s.charAt(i) != s.charAt(j)，因此不能取 i，不能取 j
+        return s.substring(i + 1, j);
+    }
+}
+
+//DP
+public class Solution {
+
+    public String longestPalindrome(String s) {
+        // 特判
+        int len = s.length();
+        if (len < 2) {
+            return s;
+        }
+
+        int maxLen = 1;
+        int begin = 0;
+
+        // dp[i][j] 表示 s[i, j] 是否是回文串
+        boolean[][] dp = new boolean[len][len];
+        char[] charArray = s.toCharArray();
+
+        for (int i = 0; i < len; i++) {
+            dp[i][i] = true;
+        }
+        for (int j = 1; j < len; j++) {
+            for (int i = 0; i < j; i++) {
+                if (charArray[i] != charArray[j]) {
+                    dp[i][j] = false;
+                } else {
+                    if (j - i < 3) {
+                        dp[i][j] = true;
+                    } else {
+                        dp[i][j] = dp[i + 1][j - 1];
+                    }
+                }
+
+                // 只要 dp[i][j] == true 成立，就表示子串 s[i..j] 是回文，此时记录回文长度和起始位置
+                if (dp[i][j] && j - i + 1 > maxLen) {
+                    maxLen = j - i + 1;
+                    begin = i;
+                }
+            }
+        }
+        return s.substring(begin, begin + maxLen);
+    }
+}
+```
+
+#### 12. 最长重复子串
+
+```java
+private static final long P = 805306457;
+    private static final long MOD = (int) (1e9+7);
+    private long[] hash;
+    private long[] power;
+    private int[] ansPos;
+
+    private void calcHashAndPower(char[] arr) {
+        hash[0] = arr[0];
+        power[0] = 1;
+        for (int i = 1; i < arr.length; i++) {
+            hash[i] = (hash[i-1] * P + arr[i]) % MOD;
+            power[i] = (power[i-1] * P) % MOD;
+        }
+    }
+
+    private long getSubStrHash(int l, int r) {
+        if (l == 0) {
+            return hash[r];
+        }
+        return ((hash[r] - power[r-l+1] * hash[l-1]) % MOD + MOD) % MOD;
+    }
+
+    private boolean hasTrueExist(char[] arr, int l1, int l2, int subLen) {
+        for (int i = 0; i < subLen; i++) {
+            if (arr[l1 + i] != arr[l2 + i]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * 判断是否存在指定长度的重复子串
+     * 由于不同子串可能存在相同的hash值，因此需要解决hash冲突
+     */
+    private boolean hasDuplicatedStr(char[] arr, int subLen) {
+        Map<Long, List<Integer>> map = new HashMap<>();
+        for (int l = 0; l <= arr.length - subLen; l++) {
+            long strHash = getSubStrHash(l, l + subLen - 1);
+            if (map.containsKey(strHash)) {
+                List<Integer> oldPosList = map.get(strHash);
+                for (Integer oldPos : oldPosList) {
+                    if (hasTrueExist(arr, oldPos, l, subLen)) {
+                        ansPos[0] = l;
+                        ansPos[1] = l + subLen;
+                        return true;
+                    }
+                }
+
+                oldPosList.add(l);
+            } else {
+                List<Integer> posList = new ArrayList<>();
+                posList.add(l);
+                map.put(strHash, posList);
+            }
+        }
+
+        return false;
+    }
+
+    public String longestDupSubstring(String str) {
+        char[] arr = str.toCharArray();
+        int len = arr.length;
+        hash = new long[len];
+        power = new long[len];
+        ansPos = new int[2];
+
+        calcHashAndPower(arr);
+
+        // 二分+滑动窗口
+        // 其中二分确定长度，因为当一个长串出现重复串，那么它的子串必定出现重复串。因此可以用二分去猜最大长度
+        int low = 1;
+        int high = len;
+        while (low <= high) {
+            int mid = (low + high) >>> 1;
+            boolean hasDuplicated = hasDuplicatedStr(arr, mid);
+            if (hasDuplicated) {
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+        }
+
+        if (ansPos[0] == ansPos[1]) {
+            return "";
+        }
+        
+        return str.substring(ansPos[0], ansPos[1]);
+    }
+
+```
+
+
+
+#### 13. 最小覆盖子串
+
+```java
+//滑动窗口
+class Solution {
+    public String minWindow(String s, String t) {
+        if (s == null || t == null || s.length() == 0 || t.length() == 0) return "";
+        // 定义一个数字，用来记录字符串 t 中出现字符的频率，也就是窗口内需要匹配的字符和相应的频率
+        int[] map = new int[128];
+        for (char c : t.toCharArray()) {
+            map[c]++;
+        }
+        int left = 0, right = 0;
+        int match = 0;  // 匹配字符的个数
+        int minLen = s.length() + 1;   // 最大的子串的长度
+        // 子串的起始位置 子串结束的位置(如果不存在这样的子串的话，start，end 都是 0，s.substring 截取就是 “”
+        int start = 0, end = 0;
+        while (right < s.length()){
+            char charRight = s.charAt(right); // 右边界的那个字符
+            map[charRight]--;   // 可以理解为需要匹配的字符 charRight 减少了一个
+            // 如果字符 charRight 在 t 中存在，那么经过这一次操作，只要个数大于等于 0，说明匹配了一个
+            // 若字符 charRight 不在 t 中，那么 map[charRight] < 0, 不进行任何操作
+            if (map[charRight] >= 0) match++;
+            right++;  // 右边界右移，这样下面就变成了 [)，方便计算窗口大小
+
+            // 只要窗口内匹配的字符达到了要求，右边界固定，左边界收缩
+            while (match == t.length()){
+                int size = right - left;
+                if (size < minLen){
+                    minLen = size;
+                    start = left;
+                    end = right;
+                }
+                char charLeft = s.charAt(left);  // 左边的那个字符
+                map[charLeft]++;  // 左边的字符要移出窗口
+                // 不在 t 中出现的字符，移出窗口，最终能够达到的最大值 map[charLeft] = 0
+                // 如果恰好移出了需要匹配的一个字符，那么这里 map[charLeft] > 0, 也就是还要匹配字符 charLeft，此时 match--
+                if (map[charLeft] > 0) match--;
+                left++;  // 左边界收缩
+            }
+        }
+        return s.substring(start, end);
+    }
+}
+```
+
+
 
 ### 3. 哈希表
 
@@ -850,13 +1190,216 @@ class MyHashMap {
 
 #### 2. 和为 K 的子数组：给定一个整数数组和一个整数 k，你需要找到该数组中和为 k 的连续的子数组的个数
 
-#### 3. 一种接收消息并按顺序打印的结构设计：单链表 + 两个HashMap
+```java
+//暴力，枚举左右边界
+public class Solution {
 
-#### 4. 哈希表增加 setAll 功能
+    public int subarraySum(int[] nums, int k) {
+        int len = nums.length;
+        int count = 0;
+        for (int left = 0; left < len; left++) {
+            for (int right = left; right < len; right++) {
+
+                int sum = 0;
+                for (int i = left; i <= right; i++) {
+                    sum += nums[i];
+                }
+                if (sum == k) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    public static void main(String[] args) {
+        int[] nums = new int[]{1, 1, 1};
+        int k = 2;
+        Solution solution = new Solution();
+        int res = solution.subarraySum(nums, k);
+        System.out.println(res);
+    }
+}
+
+//暴力优化，先固定左边界，枚举右边界O(n^2)
+public class Solution {
+    public int subarraySum(int[] nums, int k) {
+        int count = 0;
+        int len = nums.length;
+        for (int left = 0; left < len; left++) {
+            int sum = 0;
+            // 区间里可能会有一些互相抵销的元素
+            for (int right = left; right < len; right++) {
+                sum += nums[right];
+                if (sum == k) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+}
+
+//前缀和
+public class Solution {
+
+    public int subarraySum(int[] nums, int k) {
+        int len = nums.length;
+        // 计算前缀和数组
+        int[] preSum = new int[len + 1];
+        preSum[0] = 0;
+        for (int i = 0; i < len; i++) {
+            preSum[i + 1] = preSum[i] + nums[i];
+        }
+
+        int count = 0;
+        for (int left = 0; left < len; left++) {
+            for (int right = left; right < len; right++) {
+                // 区间和 [left..right]，注意下标偏移
+                if (preSum[right + 1] - preSum[left] == k) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+}
+
+//前缀和+哈希表
+import java.util.HashMap;
+import java.util.Map;
+
+public class Solution {
+
+    public int subarraySum(int[] nums, int k) {
+        // key：前缀和，value：key 对应的前缀和的个数
+        Map<Integer, Integer> preSumFreq = new HashMap<>();
+        // 对于下标为 0 的元素，前缀和为 0，个数为 1
+        preSumFreq.put(0, 1);
+
+        int preSum = 0;
+        int count = 0;
+        for (int num : nums) {
+            preSum += num;
+
+            // 先获得前缀和为 preSum - k 的个数，加到计数变量里
+            if (preSumFreq.containsKey(preSum - k)) {
+                count += preSumFreq.get(preSum - k);
+            }
+
+            // 然后维护 preSumFreq 的定义
+            preSumFreq.put(preSum, preSumFreq.getOrDefault(preSum, 0) + 1);
+        }
+        return count;
+    }
+}
+```
 
 ### 4. 栈
 
 #### 1. 用固定大小的数组实现栈
+
+```java
+
+public class Stack {
+
+    //存数据的数组
+    int[] data;
+
+    //栈的最大长度
+    private int size;
+    //栈顶的位置
+    private int top;
+
+    public Stack(int size) {
+        this.size = size;
+        data = new int[size];
+        top = -1;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public int getTop() {
+        return top;
+    }
+
+    /**
+     * 判断是否为空栈
+     * @return
+     */
+    public boolean isEmpty()     {
+        return top == -1;
+    }
+
+    /**
+     * 判断是否为满栈
+     * @return
+     */
+    public boolean isFull() {
+        return (top+1) == size;
+    }
+
+    /**
+     * 压栈操作
+     * @param data
+     * @return
+     */
+    public boolean push(int data) {
+        if(isFull()) {
+            System.out.println("the stack is full!");
+            return false;
+        } else {
+            top++;
+            this.data[top] = data;
+            return true;
+        }
+    }
+
+
+    /**
+     *  弹栈操作
+     * @return
+     * @throws Exception
+     */
+    public int pop() throws Exception {
+        if(isEmpty()) {
+            throw new Exception("the stack is empty!");
+        } else {
+            return this.data[top--];
+        }
+    }
+
+    /**
+     * 获取栈顶的元素,但不弹栈
+     * @return
+     */
+    public int peek() {
+        return this.data[getTop()];
+    }
+
+    public static void main(String[] args) {
+        Stack stack = new Stack(20);
+        stack.push(0);
+        stack.push(1);
+        stack.push(2);
+        stack.push(3);
+        System.out.println("Now the top_num is:" + stack.peek());
+
+        while(! stack.isEmpty()) {
+            try {
+                System.out.println(stack.pop());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+
+```
+
+
 
 #### 2. **如何仅用队列实现栈**
 
@@ -917,7 +1460,80 @@ class MyStack {
 
 #### 3. 最小值栈：能够返回栈中最小元素的栈
 
+```java
+import java.util.Stack;
+
+public class MinStack {
+
+    // 数据栈
+    private Stack<Integer> data;
+    // 辅助栈
+    private Stack<Integer> helper;
+
+    /**
+     * initialize your data structure here.
+     */
+    public MinStack() {
+        data = new Stack<>();
+        helper = new Stack<>();
+    }
+
+    // 思路 1：数据栈和辅助栈在任何时候都同步
+
+    public void push(int x) {
+        // 数据栈和辅助栈一定会增加元素
+        data.add(x);
+        if (helper.isEmpty() || helper.peek() >= x) {
+            helper.add(x);
+        } else {
+            helper.add(helper.peek());
+        }
+    }
+
+    public void pop() {
+        // 两个栈都得 pop
+        if (!data.isEmpty()) {
+            helper.pop();
+            data.pop();
+        }
+    }
+
+    public int top() {
+        if(!data.isEmpty()){
+            return data.peek();
+        }
+        throw new RuntimeException("栈中元素为空，此操作非法");
+    }
+
+    public int getMin() {
+        if(!helper.isEmpty()){
+            return helper.peek();
+        }
+        throw new RuntimeException("栈中元素为空，此操作非法");
+    }
+}
+```
+
+
+
 #### 4. 栈的压入、弹出序列：输入两个整数序列，第一个序列表示栈的压入顺序，请判断第二个序列是否可能为该栈的弹出顺序
+
+```java
+class Solution {
+    public boolean validateStackSequences(int[] pushed, int[] popped) {
+        Stack<Integer> stack = new Stack<>();
+        int i = 0;
+        for(int num : pushed) {
+            stack.push(num); // num 入栈
+            while(!stack.isEmpty() && stack.peek() == popped[i]) { // 循环判断与出栈
+                stack.pop();
+                i++;
+            }
+        }
+        return stack.isEmpty();
+    }
+}
+```
 
 > 5-8题是单调栈结构问题：
 
@@ -925,19 +1541,346 @@ class MyStack {
 
 #### 6. 直方图中的最大矩形面积
 
+```java
+public class LargestRetangleArea {
+ 
+    public static int largestRectangleArea(int[] heights){
+        if(heights == null || heights.length == 0){
+            return 0;
+        }
+ 
+        int res = 0;
+        Stack<Integer> stack = new Stack<>();
+        for(int i = 0; i < heights.length; i++){
+            // 注意这里的等号 >= 最后一个相等的元素会计算出正确的值
+            while(!stack.isEmpty() && heights[stack.peek()] >= heights[i]){
+                int current = stack.pop();
+                // 结算当前元素的左右最近比它小的元素信息
+                int leftLessIndex = stack.isEmpty() ? -1 : stack.peek();
+                // 以当前元素为矩形高度时的总面积
+                int area = (i - leftLessIndex - 1) * heights[current];
+                // 更新最大面积
+                res = Math.max(res, area);
+            }
+            stack.push(i);
+        }
+        while(!stack.isEmpty()){
+            int current = stack.pop();
+            int leftLessIndex = stack.isEmpty() ? -1 : stack.peek();
+            int area = (heights.length - leftLessIndex - 1) * heights[current];
+            res = Math.max(res, area);
+        }
+        return res;
+    }
+}
+```
+
+
+
 #### 7. 求最大子矩阵的大小
+
+```java
+private int[] getMaxArray(int[] nums) {
+        // 求一维数组的最大子数组和
+        int len = nums.length;
+        int max = nums[0];
+        int maxFromCol = 0;
+        int maxToCol = 0;
+        int fromCol = 0;
+        int preMax = nums[0];
+        for (int col = 1; col < len; col++) {
+            if (preMax <= 0) {
+                if (nums[col] > max) {
+                    max = nums[col];
+                    maxFromCol = col;
+                    maxToCol = col;
+                }
+                preMax = nums[col];
+                fromCol = col;
+            } else {
+                preMax = preMax + nums[col];
+                if (preMax > max) {
+                    max = preMax;
+                    maxFromCol = fromCol;
+                    maxToCol = col;
+                }
+            }
+        }
+
+        return new int[]{max, maxFromCol, maxToCol};
+    }
+
+    // 最大子矩阵，最大子矩形
+    public int[] getMaxMatrix(int[][] matrix) {
+        int m = matrix.length;
+        int n = matrix[0].length;
+        int ansMax = Integer.MIN_VALUE;
+        int[] ansArr = new int[4];
+        int[][] colPreSum = new int[m][n];  // 列上的前缀和
+
+        for (int j = 0; j < n; j++) {
+            colPreSum[0][j] = matrix[0][j];
+            for (int i = 1; i < m; i++) {
+                colPreSum[i][j] = colPreSum[i-1][j] + matrix[i][j];
+            }
+        }
+
+        int[] tmpArr = new int[n];
+        for (int fromRow = 0; fromRow < m; fromRow++) {
+            for (int toRow = fromRow; toRow < m; toRow++) {
+                // 第fromRow行到第toRow行进行合并
+                for (int col = 0; col < n; col++) {
+                    tmpArr[col] = fromRow == 0 ? colPreSum[toRow][col] : colPreSum[toRow][col] - colPreSum[fromRow - 1][col];
+                }
+
+                // 求一维数组的最大子数组和
+                int[] maxArrayRes = getMaxArray(tmpArr);
+                int max = maxArrayRes[0];
+                int maxFromCol = maxArrayRes[1];
+                int maxToCol = maxArrayRes[2];
+
+                if (max > ansMax) {
+                    ansMax = max;
+                    ansArr[0] = fromRow;
+                    ansArr[1] = maxFromCol;
+                    ansArr[2] = toRow;
+                    ansArr[3] = maxToCol;
+                }
+            }
+        }
+
+        return ansArr;
+    }
+
+
+```
+
+
 
 #### 8. **可见山峰问题**
 
+```java
+public class GetVisiableNum {
+ 
+    public static class Record{
+        public int value;
+        public int times;
+ 
+        public Record(int value){
+            this.value = value;
+            this.times = 1;
+        }
+    }
+ 
+    public static int getVisiableNum(int[] arr){
+        if(arr == null || arr.length < 2){
+            return 0;
+        }
+        if(arr.length == 2){
+            return 1;
+        }
+ 
+        int size = arr.length;
+        int maxIndex = 0;
+        // 先在环中找到其中一个最大值的位置，哪一个都行
+        for(int i = 0; i < size; i++){
+            maxIndex = arr[i] > arr[maxIndex] ? i : maxIndex;
+        }
+ 
+        Stack<Record> stack = new Stack<>();
+        // 1、先把（最大值,1）这个记录放入stack中
+        stack.push(new Record(arr[maxIndex]));
+        // 2、从最大位置的下一个位置沿next方向遍历。当index再次回到maxIndex时，说了转了一圈，遍历结束
+        // 找到一个数左边（逆时针）方向离它最近比它大的数，右边（顺时针）离它最近比它大的数，这两个数就可以与该数组组成可见山峰对
+        int index = nextIndex(maxIndex, size);
+        int res = 0;  // 可见山峰对数
+        while(index != maxIndex){
+            // 2.1 当前数字arr[index]要进栈，判断会不会破坏栈中元素从栈底到栈顶依次增大的顺序
+            // 如果破坏了，就依次弹出栈顶记录，并计算该数的可见山峰对数量
+            while(stack.peek().value < arr[index]){
+                // 弹出记录为(X,K)，如果K==1，产生2对; 如果K>1，产生2*K + C(2,K)对。
+                // 【由于相同高度的山峰也是可见山峰，他们之间共有C(2,K)种组合，getInternalSum】
+                // 以及每个峰有左边最近比它大的和右边最近比它大的存在，即有两个可见山峰对，总共 2*times对
+                int times = stack.pop().times;
+                res += getInternalSum(times) + 2 * times;
+            }
+            // 2.2 当前数字arr[index]要进入栈了，如果和当前栈顶数字一样就合并，不一样就把记录(arr[index],1)放入栈中
+            if(stack.peek().value == arr[index]){
+                stack.peek().times++;
+            }else{
+                stack.push(new Record(arr[index]));
+            }
+            // 开始下一个数
+            index = nextIndex(index, size);
+        }
+ 
+        // 3、开始清理栈中的数据
+        // 第一阶段：栈里的元素大于两个，那么共 2*K + C(2,K)对
+        while(stack.size() > 2){
+            int times = stack.pop().times;
+            res += getInternalSum(times) + 2 * times;
+        }
+ 
+        // 第二阶段：栈里的元素等于2个
+        while(stack.size() == 2){
+            int times = stack.pop().times;
+            // 最大值有多个，则我每一个数依然能找到2对可见山峰
+            res += getInternalSum(times) + (stack.peek().times == 1 ? times : 2 * times);
+        }
+ 
+        // 第三阶段：栈里只有一个元素了
+        // 只剩下最大值了，则可见山峰只能是在最大值之间
+        res += getInternalSum(stack.pop().times);
+        return res;
+    }
+ 
+    // 如果k==1返回0，如果k>1返回C(2,k)
+    public static int getInternalSum(int k){
+        return k == 1 ? 0 : (k * (k - 1)) / 2;
+    }
+ 
+    //  环形数组中当前位置为i，数组长度为size，返回i的下一个位置
+    public static int nextIndex(int i, int size){
+        return i < (size - 1) ? (i + 1) : 0;
+    }
+}
 ```
 
+#### 9. 直方图的水量
+
+```java
+class Solution {
+    private int[] height;
+
+    public int trap(int[] height) {
+    	if(height.length <= 2)
+    		return 0;
+    	this.height = height;
+        int sum = 0;
+        int start = 0, end = 0;
+        for(int i = 0; i < height.length; ++i) {  //初次遍历，找到最高的柱子给到start，end
+        	if(height[start] < height[i]) {
+        		start = i;
+        		end = i;
+        	}
+        }
+        while(start > 0 || end < height.length-1){
+		//除start到end之外，找到最高柱子的位置 p，h[p] <=h[start] 并且h[p]<=h[end]
+            int p = findHighest(start,end);
+            if(start > p) {    //p在start前面时,计算此时p到start之间的积水
+            	for(int i = h+1; i < start; ++i) {
+            		sum += height[p]-height[i];
+            	}
+            	start = p;
+            }
+            if(end < p) {     //p在end后面时,计算此时end到p之间的积水
+            	for(int i = end+1; i < p; ++i) {
+            		sum += height[p]-height[i];
+            	}
+            	end = p;
+            }
+        }
+        return sum;
+    }
+
+	//这个方法的作用是找到 start到end之外(不包含自身)的最高的h[i]，返回i
+    private int findHighest(int start, int end){
+    	int p = -1, max = -1;
+    	for(int i = 0; i < start; ++i) {
+    		if(max < height[i]) {
+    			max = height[i];
+    			p = i;
+    		}
+    	}
+    	for(int i = end+1; i < height.length; ++i) {
+    		if(max < height[i]) {
+    			max = height[i];
+    			p = i;
+    		}
+    	}
+        return p;
+    }
+}
 ```
 
+#### 10. 最大正方形
 
+```java
+class Solution {
+    public int maximalSquare(char[][] matrix) {
+        int maxSide = 0;
+        if (matrix == null || matrix.length == 0 || matrix[0].length == 0) {
+            return maxSide;
+        }
+        int rows = matrix.length, columns = matrix[0].length;
+        int[][] dp = new int[rows][columns];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                if (matrix[i][j] == '1') {
+                    if (i == 0 || j == 0) {
+                        dp[i][j] = 1;
+                    } else {
+                        dp[i][j] = Math.min(Math.min(dp[i - 1][j], dp[i][j - 1]), dp[i - 1][j - 1]) + 1;
+                    }
+                    maxSide = Math.max(maxSide, dp[i][j]);
+                }
+            }
+        }
+        int maxSquare = maxSide * maxSide;
+        return maxSquare;
+    }
+}
+```
 
 ### 5. 队列
 
 #### 1. 用固定大小的数组实现队列
+
+```java
+/**
+ * 固定长度数组实现队列
+ */
+public class ArrayQueue {
+    private int[] data;
+    private int start;
+    private int end;
+    private int size;
+
+    public ArrayQueue(int capacity) {
+        if (capacity < 0)
+            throw new IllegalArgumentException("capacity should not be less than 0");
+        data = new int[capacity];
+        start = end = size = 0;
+    }
+
+    public void push(int obj) {
+        if (size == data.length)
+            throw new ArrayIndexOutOfBoundsException("the queue is full");
+        data[end] = obj;
+        end = (end + 1) % data.length;
+        size++;
+    }
+
+    public int poll() {
+        if (size == 0)
+            throw new ArrayIndexOutOfBoundsException("the queue is empty");
+        size--;
+        int temp = data[start];
+        start = (start + 1) % data.length;
+        return temp;
+    }
+
+    public Integer peek() {
+        if (size == 0)
+            throw null;
+        return data[start];
+    }
+}
+
+
+```
+
+
 
 #### 2. **如何仅用栈结构实现队列**
 
@@ -1043,6 +1986,35 @@ class Solution {
 
 
 #### 2. 反转双向链表
+
+```java
+public class Solution {
+    public class DoubleNode{
+        public int value;
+        public DoubleNode next;
+        public DoubleNode last;
+
+        public DoubleNode(int data){
+            this.value=data;
+        }
+    }
+    public DoubleNode reverseList(DoubleNode head){
+        DoubleNode pre = null;
+        DoubleNode next = null;
+        while(head!=null){
+            next = head.next;
+            head.next=pre;
+            head.last=next;
+            pre=head;
+            head=next;
+        }
+        return pre;
+    }
+}
+
+```
+
+
 
 #### 3. **K 个一组翻转链表**
 
@@ -1153,7 +2125,61 @@ class Solution {
 
 #### 6. O(1) 时间内删除一个节点
 
+```java
+class Solution {
+    public ListNode deleteNode(ListNode head, int val) {
+        if(head.val == val) return head.next;
+        ListNode pre = head, cur = head.next;
+        while(cur != null && cur.val != val) {
+            pre = cur;
+            cur = cur.next;
+        }
+        if(cur != null) pre.next = cur.next;
+        return head;
+    }
+}
+
+```
+
 #### 7. 删除链表中重复的节点
+
+```java
+class ListNode {
+    int val;
+    ListNode next = null;
+ 
+    ListNode(int val) {
+        this.val = val;
+    }
+}
+ 
+public class Solution {
+    public ListNode deleteDuplication(ListNode pHead)
+    {
+       ListNode first = new ListNode(-1);
+       first.next = pHead;
+       ListNode last = first;
+       ListNode p = pHead;
+ 
+       while(p!=null&&p.next!=null){
+           if(p.val==p.next.val){
+               int val = p.val;
+               while(p!=null&&p.val==val){
+                   p = p.next;
+               last.next = p;
+               }
+           }else{
+               last = p;
+               p = p.next;
+           }
+       }
+ 
+       return first.next;
+    }
+}
+```
+
+
 
 #### 8. **从尾到头打印链表**
 
@@ -1194,6 +2220,71 @@ class Solution {
 
 
 #### 9. 判断一个链表是否为回文结构
+
+```java
+/*
+1 找到中点位置，从这里开始反转后半段链表
+2 再次找到中点位置，中点与head开始进行对比，中途有不相同的返回false，否则最后返回true
+tips：注意这道题不同于返回中间节点，所以slow从dummy开始，而fast从head开始，也就是slow.next指向的是中点位置，为什么要这样做，是为了将链表从中点断开，也就是slow.next=null;
+这样做可以不用担心链表节点数是偶数还是奇数。
+*/
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public static boolean isPalindrome(ListNode head) {
+        //找到中点位置，从这里开始反转后半段链表
+        //再次找到中点位置，中点与head开始进行对比，中途有不相同的返回false，否则最后返回true
+        ListNode dummy = new ListNode(-1);
+        dummy.next = head;
+        ListNode slow = dummy;//遍历结束时slow指向的是mid的前一个
+        ListNode fast = head;
+        while (fast != null && fast.next != null){
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+
+        ListNode head2 = reverse(slow.next);
+        slow.next = null;
+        while (head != null && head2 != null){
+            if(head.val != head2.val)
+                return false;
+            else{
+                head = head.next;
+                head2 = head2.next;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 反转链表
+     * @param head
+     * @return
+     */
+    private static ListNode reverse(ListNode head){
+        if(head == null)
+            return null;
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        ListNode pre = dummy;
+        ListNode cur = pre.next;
+        while (cur.next != null){
+            ListNode nex = cur.next;
+
+            cur.next = nex.next;
+            nex.next = pre.next;
+            pre.next = nex;
+        }
+        return pre.next;
+    }
+}
+```
 
 #### 10. 给出两个有序链表的头结点，打印出两个链表中相同的元素
 
@@ -1278,6 +2369,101 @@ public class Solution {
 ```
 
 #### 15. 复杂链表的复制
+
+#### 16. 二叉搜索树与双向链表转换
+
+```java
+//递归
+class Solution {
+    public Node treeToDoublyList(Node root) {
+        //如果为空，返回空
+        if(root==null) return null;
+        //结果链表的起点和终点
+        Node start=root,end=root;
+        //如果右侧节点不为空，序列化右边子树后，将其与root进行连接，然后存储终点
+        if(root.right!=null){
+            Node kidHead = treeToDoublyList(root.right);
+            Node kidEnd  =kidHead.left;
+            root.right=kidHead;kidHead.left=root;
+            end =kidEnd;
+        }
+        //如果左侧子树不为空，依次循环找到最左的起点
+        while(root.left!=null) {
+            Node pre =root;
+            root = root.left;
+            //在这过程中遇到的子节点的右子树如果不为空，则按递归方式序列化连接，
+            if(root.right!=null){
+                Node kidHead = treeToDoublyList(root.right);
+                Node kidEnd  =kidHead.left;
+                root.right=kidHead;kidHead.left=root;
+                kidEnd.right=pre;pre.left=kidEnd;
+            //右子树为空，直接改变右指向
+            }else{
+                root.right=pre;
+            }
+        }
+        //连接头尾，构成循环链表，返回结果
+        start=root;
+        start.left=end;
+        end.right=start;
+        return start;
+    }
+}
+//非递归
+    public Node treeToDoublyList(Node root) {
+        if(root == null){
+            return null;
+        }
+         Stack<Node> stack = new Stack<>();
+         Node current = root;
+         Node pre = null, head = null, tail = null;
+         while(!stack.isEmpty() || current != null) {
+             while(current != null) {
+                 stack.push(current);
+                 current = current.left;
+             }
+             current = stack.pop();
+             tail = current;
+             if(pre == null) {//处理头结点
+                 head = current;
+             }else {
+                 pre.right = current;
+                 current.left = pre;
+             }
+            pre = current;
+            current = current.right;
+         }
+         tail.right = head;
+         head.left = tail;
+         return head;
+    }
+```
+
+#### 17. 两个链表的第一个公共节点
+
+```java
+public class Solution {
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        if(headA == null || headB == null) return null;
+        ListNode a = headA, b = headB;
+        int len1 = 0, len2 = 0, sum = 0;
+        while(a != null && ++len1 > 0) a = a.next;
+        while(b != null && ++len2 > 0) b = b.next;
+        a = headA;
+        b = headB;
+        while (a != b){
+            if(a.next == null) a = headB;
+            else a = a.next;
+            if(b.next == null) b = headA;
+            else b = b.next;
+            if(sum++ > len1 + len2) return null;
+        }
+        return a;
+    }
+}
+```
+
+
 
 ### 7. 树
 
@@ -2017,13 +3203,13 @@ class Solution {
 
 > 22-25题是二叉树信息收集问题：
 
-#### 1. 舞会的最大活跃度
+#### 22. 舞会的最大活跃度
 
-#### 2. 求一棵二叉树中最大二叉搜索子树的节点个数
+#### 23. 求一棵二叉树中最大二叉搜索子树的节点个数
 
-#### 3. 求一个二叉树的最远距离
+#### 24. 求一个二叉树的最远距离
 
-#### 4. 二叉树的最大路径和
+#### 25. 二叉树的最大路径和
 
 ```java
 /**
@@ -2054,6 +3240,24 @@ class Solution {
         int rightMax = Math.max(0, dfs(root.right));        // 右孩子贡献
         res = Math.max(res, root.val + leftMax + rightMax); // 更新res
         return root.val + Math.max(leftMax, rightMax);      // 返回当前节点的总贡献
+    }
+}
+```
+
+#### 26. 二叉树剪枝
+
+```java
+class Solution {
+    public TreeNode pruneTree(TreeNode root) {
+        if(root == null) {
+            return null;
+        }
+        root.left = pruneTree(root.left);
+        root.right = pruneTree(root.right);
+        if(root.left == null && root.right == null && root.val == 0) {
+            return null;
+        }
+        return root;
     }
 }
 ```
@@ -3069,4 +4273,6 @@ public class Main {
     }
 }
 ```
+
+#### 5.循环队列
 
