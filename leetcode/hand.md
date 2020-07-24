@@ -2290,7 +2290,115 @@ class Solution {
 
 #### 11. 将单向链表按某值划分成左边小、中间相等、右边大的形式
 
+```java
+class test{
+    public class Node{
+        public int value;
+        public Node next;
+
+        public Node(int data){
+            this.value = data;
+        }
+    }
+
+    public Node listPartition1(Node head,int pivot){
+        if(head == null){
+            return head;
+        }
+        Node cur = head;
+        int i = 0;
+        while(cur!=null){
+            i++;
+            cur = cur.next;
+        }
+        Node[] nodeArr = new Node[i];
+        i = 0;
+        cur = head;
+        for(i=0;i<nodeArr.length;i++){
+            nodeArr[i] = cur;
+            cur = cur.next;
+        }
+        arrPartition(nodeArr,pivot);
+        for(i=1;i!=nodeArr.length;i++){
+            nodeArr[i-1].next = nodeArr[i];
+        }
+        nodeArr[i-1].next = null;
+        return nodeArr[0];
+    }
+
+    public void arrPartition(Node[] nodeArr,int pivot){
+        int small = -1;
+        int big = nodeArr.length;
+        int index = 0;
+        while(index != big){
+            if(nodeArr[index].value < pivot){
+                swap(nodeArr,++small,index++);
+            }else if(nodeArr[index].value == pivot){
+                index++;
+            }else{
+                swap(nodeArr,--big,index);
+            }
+        }
+    }
+
+    public void swap(Node[] nodeArr,int a,int b){
+        Node tmp = nodeArr[a];
+        nodeArr[a] = nodeArr[b];
+        nodeArr[b] = tmp;
+    }   
+}
+```
+
+
+
 #### 12. 复制含有随机指针节点的链表
+
+```java
+第一步：把链表的每个节点复制并将它放在原节点后面，只复制next指针；
+第二步：如果要找到cur的复制节点的random指针，可以通过cur->random->next找到；
+第三步：将原节点和新的节点分类开即可.
+
+原节点1的随机指针指向原节点3，新节点1的随机指针指向的是原节点3的next
+原节点3的随机指针指向原节点2，新节点3的随机指针指向的是原节点2的next
+class Solution {
+    public Node copyRandomList(Node head) {
+        if(head==null) {
+            return null;
+        }
+        Node p = head;
+        //第一步，在每个原节点后面创建一个新节点
+        //1->1'->2->2'->3->3'
+        while(p!=null) {
+            Node newNode = new Node(p.val);
+            newNode.next = p.next;
+            p.next = newNode;
+            p = newNode.next;
+        }
+        p = head;
+        //第二步，设置新节点的随机节点
+        while(p!=null) {
+            if(p.random!=null) {
+                p.next.random = p.random.next;
+            }
+            p = p.next.next;
+        }
+        Node dummy = new Node(-1);
+        p = head;
+        Node cur = dummy;
+        //第三步，将两个链表分离
+        while(p!=null) {
+            cur.next = p.next;
+            cur = cur.next;
+            p.next = cur.next;
+            p = p.next;
+        }
+        return dummy.next;
+    }
+}	
+
+```
+
+
 
 #### 13. **环形链表**
 
@@ -2807,6 +2915,27 @@ public static TreeNode postMorrisReverseList(TreeNode head) {
 
 #### 5. 输入一个数组，判断是不是二叉搜索树的后序遍历序列
 
+```java
+    public boolean verifyPostorder(int [] postorder) {
+        if (postorder.length <= 2) return true;
+        return verifySeq(postorder, 0, postorder.length-1);
+    }
+    private boolean verifySeq(int[] postorder, int start, int end) {
+        if (start >= end) return true;
+        int i;
+        for (i = start; i < end; i++) {
+            if (postorder[i] > postorder[end]) break;
+        }
+        // 验证后面的是否都大于sequence[end]
+        for (int j = i; j < end; j++) {
+            if (postorder[j] < postorder[end]) return false;
+        }
+        return verifySeq(postorder, start, i-1) && verifySeq(postorder, i, end-1);
+    }
+```
+
+
+
 #### 6. 二叉树右视图
 
 > 6-7题 是二叉树的序列化与反序列化：
@@ -3185,9 +3314,222 @@ class Solution {
 
 #### 13. 判断一棵树是否是对称的二叉树
 
+```java
+//递归
+class TreeNode {
+    int val = 0;
+    TreeNode left = null;
+    TreeNode right = null;
+
+    public TreeNode(int val) {
+        this.val = val;
+
+    }
+}
+
+class Solution {
+    public boolean isSymmetric(TreeNode root) {
+        if(root == null){
+            return true;
+        }
+        return isMirror(root.left,root.right);
+    }
+    public boolean isMirror(TreeNode left, TreeNode right){
+        if(left == null && right == null){
+            return true;
+        }else if((left == null && right != null) || (right == null && left != null)){
+            //左右有一边为空另一边不为空，说明不对称
+            return false;
+        }
+        if(left.val != right.val){
+            return false;
+        }
+
+        //递归左的左孩子和右的右孩子相等，并且左的右孩子和右的左孩子相等
+        return isMirror(left.left,right.right) && isMirror(left.right,right.left);
+
+    }
+}
+
+//非递归
+import java.util.Deque;
+import java.util.LinkedList;
+
+public class Solution {
+
+    public boolean isSymmetric(TreeNode root) {
+        if (root == null) {
+            return true;
+        }
+
+        // 实现类不能选用 ArrayDeque，因为该类的 add 方法会对添加的元素做非空检查
+        Deque<TreeNode> deque = new LinkedList<>();
+        // Deque<TreeNode> deque = new ArrayDeque<>();
+
+        deque.addFirst(root.left);
+        deque.addLast(root.right);
+
+        while (!deque.isEmpty()) {
+            TreeNode leftNode = deque.removeFirst();
+            TreeNode rightNode = deque.removeLast();
+
+            if (leftNode == null && rightNode == null) {
+                continue;
+            }
+
+            if (leftNode == null || rightNode == null) {
+                return false;
+            }
+
+            if (leftNode.val != rightNode.val) {
+                return false;
+            }
+
+            deque.addFirst(leftNode.right);
+            deque.addFirst(leftNode.left);
+            deque.addLast(rightNode.left);
+            deque.addLast(rightNode.right);
+        }
+
+        return true;
+    }
+}
+```
+
 #### 14. 二叉树的镜像
 
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public TreeNode mirrorTree(TreeNode root) {
+		if (root == null) {
+            return root;
+        }
+		//下面三句是将当前节点的左右子树交换
+		TreeNode tmp = root.right;
+		root.right = root.left;
+		root.left = tmp;
+		//递归交换当前节点的 左子树
+		mirrorTree(root.left);
+		//递归交换当前节点的 右子树
+		mirrorTree(root.right);
+		//函数返回时就表示当前这个节点，以及它的左右子树
+		//都已经交换完了
+		return root;
+    }
+}
+
+//迭代
+class Solution {
+	public TreeNode mirrorTree(TreeNode root) {
+		if(root==null) {
+			return null;
+		}
+		//将二叉树中的节点逐层放入队列中，再迭代处理队列中的元素
+		LinkedList<TreeNode> queue = new LinkedList<TreeNode>();
+		queue.add(root);
+		while(!queue.isEmpty()) {
+			//每次都从队列中拿一个节点，并交换这个节点的左右子树
+			TreeNode tmp = queue.poll();
+			TreeNode left = tmp.left;
+			tmp.left = tmp.right;
+			tmp.right = left;
+			//如果当前节点的左子树不为空，则放入队列等待后续处理
+			if(tmp.left!=null) {
+				queue.add(tmp.left);
+			}
+			//如果当前节点的右子树不为空，则放入队列等待后续处理
+			if(tmp.right!=null) {
+				queue.add(tmp.right);
+			}
+			
+		}
+		//返回处理完的根节点
+		return root;
+	}
+}
+```
+
 #### 15. 树的子结构：输入两棵二叉树 A 和 B，判断 B 是不是 A 的子结构
+
+```java
+//BFS
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public boolean isSubStructure(TreeNode A, TreeNode B) {
+        if(A==null || B == null)
+            return false;
+        LinkedList<TreeNode> aq = new LinkedList<>();
+        aq.add(A);
+        while(aq.size() > 0){
+            TreeNode n = aq.poll();
+            if(n.val == B.val && compare(n,B))
+                return true;
+            if(n.left != null)
+                aq.add(n.left);
+            if(n.right != null)
+                aq.add(n.right);
+        }
+        return false;
+    }
+
+    boolean compare(TreeNode n1, TreeNode n2){
+        if(n2 == null)
+            return true;
+        if(n1 == null)
+            return false;
+        return n1.val==n2.val&&compare(n1.left,n2.left)&&compare(n1.right,n2.right);
+    }
+}
+
+//dfs
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public boolean isSubStructure(TreeNode A, TreeNode B) {
+        //采用先序遍历的方式进行逐个结点的比较
+        return (A != null && B != null) && 
+        (recur(A, B) || isSubStructure(A.left, B) || isSubStructure(A.right, B));
+    }
+
+    //判断是否是子结构
+    public boolean recur(TreeNode A,TreeNode B){
+        //子树为空了，即判断完成了
+        if(B == null)   return true;
+        //父树为空了，小树还没判断完毕，也即不存在子结构
+        if(A == null || A.val != B.val)   return false;
+
+        //查看子树相应的结点是否等于对应的子树中的结点的值
+        return recur(A.left, B.left) && recur(A.right, B.right);
+    }
+}
+
+```
+
+
 
 #### 16. 合并二叉树
 
@@ -4275,4 +4617,367 @@ public class Main {
 ```
 
 #### 5.循环队列
+
+#### 6.实现一个线程池
+
+```
+通过上面的介绍线程的特点可以推断出，一个完整的线程池应该具有以下功能：
+
+任务队列：用于缓存已经提交的任务。
+线程数量管理：线程池应该自动控制线程池里面线程的数量，可以通过以下三个参数来实现：（1）初始线程数init，线程池能容纳最大线程数max，线程的活跃数量：core，三者的关系是int<=core<=max
+任务拒绝策略：当线程数量达到上限且任务队列满的时候，需要有对应的拒绝策略来通知提交者线程被拒绝。
+线程工厂：用于自定义线程，比如设置线程名称等。
+提交队列：用于存放提交的线程，需要有数量限制。
+活跃时间：线程自动维护的时间。
+通过上面的定义，就可以自己写一个线程池，首先是接口类：
+
+ThreadPool
+线程池接口，定义了线程池的一些方法，其中最主要的是execute,shutdown，后面主要实现这两个方法。
+public interface ThreadPool {
+    //提交任务到线程池
+    void execute(Runnable runnable);
+    //关闭
+    void shutdown();
+    //获取线程池初始化时的线程大小
+    int getInitSize();
+    //获取线程池最大线程输
+    int getMaxSize();
+    //获取线程池核心线程数量
+    int getCoreSize();
+    //获取活跃线程数量
+    int getActiveCount();
+    //获取线程池缓存队列大小
+    int getQueueSize();
+    //查看线程是否被销毁
+    boolean isShutdown();
+
+}
+RunnableQueue
+//缓存提交到线程池的队列任务
+public interface RunnableQueue {
+    //新线程进来时,提交任务到缓存队列
+    void offer(Runnable runnable);
+    //取出线程
+    Runnable take();
+    //获取队列中线程的数量
+    int size();
+}
+自定义异常
+没什么特别，只是继承了Runtime异常，换了一个名字而已
+//自定义异常
+public class RunnableDenyException extends RuntimeException {
+    public RunnableDenyException(String msg){
+        super(msg);
+    }
+}
+DenyPolicy
+拒绝策略，我定义了三种策略，在代码中有注释可以体现
+import Thread.ThreadPool.RunnableDenyException;
+
+@FunctionalInterface
+//这个类定义了当缓存队列达到上限的时候，将通过什么方式来通知提交者，实现了默认的三种方法
+public interface DenyPolicy {
+    void reject(Runnable runnable, ThreadPool threadPool);
+
+
+    //直接丢弃线程，什么都不做，不通知
+    class DiscardDenyPolicy implements DenyPolicy {
+
+        @Override
+        public void reject(Runnable runnable, ThreadPool threadPool) {
+
+        }
+    }
+
+    //抛出异常通知
+    class AbortDenyPolicy implements DenyPolicy {
+
+        @Override
+        public void reject(Runnable runnable, ThreadPool threadPool) {
+            throw new RunnableDenyException("这个线程:" + runnable + " 将会被丢弃");
+        }
+    }
+
+    //使线程在提交者所在的线程中运行
+    class RunnerDenyPolicy implements DenyPolicy {
+        @Override
+        public void reject(Runnable runnable, ThreadPool threadPool) {
+            if (!threadPool.isShutdown()) {
+                runnable.run();
+            }
+        }
+    }
+}
+ThreadFactory
+创建线程的工厂，用于创建线程
+@FunctionalInterface
+//创建线程的工厂
+public interface ThreadFactory {
+
+    Thread creatThread(Runnable runnable);
+}
+接口定义完成后，就开始写接口的实现类了
+缓存队列
+使用了linkedList作为队列，进队的offer方法要判断队列是否满，没有满则加入队列并唤醒，出队只需要判断队列是否为空，如果为空就阻塞等待
+这里也可以使用自己写的Queue方法，同样具有进队出队功能，最后会把代码放上
+import java.util.LinkedList;
+
+public class LinkedRunnableQueue implements RunnableQueue {
+    //任务队列的最大容量
+    private final int limit;
+    //容量最大时，需要使用的拒绝策略
+    private final DenyPolicy denyPolicy;
+    //存放任务的队列
+    private final LinkedList<Runnable> runnableLinkedList;
+    private final ThreadPool threadPool;
+
+    public LinkedRunnableQueue(int limit, DenyPolicy denyPolicy, ThreadPool threadPool) {
+        this.limit = limit;
+        this.denyPolicy = denyPolicy;
+        this.threadPool = threadPool;
+        runnableLinkedList = new LinkedList<>();
+    }
+
+    @Override
+    public void offer(Runnable runnable) {
+        synchronized (runnableLinkedList) {
+            //如果缓存数量超过最大值，则使用拒绝策略
+            if (runnableLinkedList.size() >= limit) {
+                denyPolicy.reject(runnable, threadPool);
+            } else {
+                //成功加入list的末尾，并唤醒阻塞中的线程
+                runnableLinkedList.addLast(runnable);
+                runnableLinkedList.notifyAll();
+            }
+        }
+    }
+
+    @Override
+    public Runnable take() {
+        synchronized (runnableLinkedList) {
+            //如果缓存队列为空，则挂起，等待新的任务进来唤醒
+            while (runnableLinkedList.isEmpty()) {
+                try {
+                    runnableLinkedList.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return runnableLinkedList.removeFirst();
+    }
+
+    @Override
+    public int size() {
+        synchronized (runnableLinkedList){
+            //返回list中的个数
+            return runnableLinkedList.size();
+        }
+    }
+}
+继承Runnable
+//实现Runnable,用于线程池内部，该类会用到RunnableQueue，会不断的从队列中拿出线程并运行
+public class InternalTask implements Runnable {
+
+    private final RunnableQueue runnableQueue;
+    private volatile boolean running = true;
+
+    public InternalTask(RunnableQueue runnableQueue) {
+        this.runnableQueue = runnableQueue;
+    }
+
+    @Override
+    public void run() {
+        //如果当前线程在运行中切没有被中断，则不断从缓存队列中拿出线程运行
+        while (running && !Thread.currentThread().isInterrupted()){
+            try {
+                Runnable task = runnableQueue.take();
+                task.run();
+            } catch (Exception e) {
+                running = false;
+                break;
+            }
+        }
+    }
+    //停止当前任务，会在shutdown中使用
+    public void stop(){
+        this.running = false;
+    }
+}
+最后是线程池的具体实现，有注释
+package Thread.ThreadPool;
+
+import java.util.ArrayDeque;
+import java.util.Queue;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.IntStream;
+
+
+public class BasicThreadPool extends Thread implements ThreadPool {
+    //初始化线程池的数量
+    private final int initSize;
+    //线程池最大线程数
+    private final int maxSize;
+    //线程池核心线程数
+    private final int coreSize;
+    //当前活跃线程的数量
+    private int activeCount;
+    //创建线程的工厂
+    private final ThreadFactory threadFactory;
+    //任务队列
+    private final RunnableQueue runnableQueue;
+    //线程是否被摧毁
+    private volatile boolean isShutdown = false;
+    //工作队列
+    private final Queue<ThreadTask> internalTasks = new ArrayDeque<>();
+    //拒绝策略
+    private final static DenyPolicy DEFAULT_DENY_POLICY = new DenyPolicy.DiscardDenyPolicy();
+    //看下面，自定义线程工厂
+    private final static ThreadFactory DEFAULT_THREAD_FACTORY =
+            new DefaultThreadFactory();
+    private final long keepAliveTime;
+    private final TimeUnit timeUnit;
+
+
+    //构造默认线程池时需要传入的参数：初始线程池的数量，最大线程的数量，核心线程数量，任务队列的最大数
+    public BasicThreadPool(int initSize, int maxSize, int coreSize,
+                           int queueSize) {
+        this(initSize, maxSize, coreSize, DEFAULT_THREAD_FACTORY,
+                queueSize, DEFAULT_DENY_POLICY, 2,
+                TimeUnit.SECONDS);
+    }
+
+    public BasicThreadPool(int initSize, int maxSize, int coreSize, ThreadFactory threadFactory, int queueSize,
+                           DenyPolicy denyPolicy, long keepAliveTime, TimeUnit timeUnit) {
+        this.initSize = initSize;
+        this.maxSize = maxSize;
+        this.coreSize = coreSize;
+        this.threadFactory = threadFactory;
+        this.runnableQueue = new LinkedRunnableQueue(queueSize, denyPolicy, this);
+        this.keepAliveTime = keepAliveTime;
+        this.timeUnit = timeUnit;
+        this.init();
+    }
+
+    //初始化线程池并创建initSize个线程
+    private void init() {
+        //继承了Thread类，初始化时先启动自己
+        start();
+        IntStream.range(0, initSize).forEach(i -> newThread());
+    }
+
+    //创建新的任务线程并启动
+    private void newThread() {
+        InternalTask internalTask = new InternalTask(runnableQueue);
+        Thread thread = this.threadFactory.creatThread(internalTask);
+        ThreadTask threadTask = new ThreadTask(thread, internalTask);
+        internalTasks.offer(threadTask);
+        this.activeCount++;
+        thread.start();
+    }
+
+    private void removeThread() {
+        ThreadTask threadTask = internalTasks.remove();
+        threadTask.internalTask.stop();
+        this.activeCount--;
+    }
+
+    @Override
+    public void execute(Runnable runnable) {
+        if (this.isShutdown) {
+            throw new IllegalStateException("这个线程池已经被销毁了");
+        }
+        this.runnableQueue.offer(runnable);
+    }
+
+    @Override
+    public void run() {
+       //自动维护线程池
+        while (!isShutdown && !isInterrupted()) {
+            try {
+                timeUnit.sleep(keepAliveTime);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                isShutdown = true;
+                break;
+            }
+            synchronized (this) {
+                if (isShutdown) {
+                    break;
+                }
+                //当任务队列大于0，活跃线程小于核心线程的时候，扩容线程
+                if (runnableQueue.size() > 0 && activeCount < coreSize) {
+                    IntStream.range(initSize, coreSize).forEach(i -> newThread());
+                    continue;
+                }
+                if (runnableQueue.size() > 0 && activeCount < maxSize) {
+                    IntStream.range(coreSize, maxSize).forEach(i -> newThread());
+                }
+                if (runnableQueue.size() == 0 && activeCount > coreSize) {
+                    IntStream.range(coreSize, activeCount).forEach(i -> removeThread());
+                }
+
+            }
+        }
+    }
+
+    @Override
+    public void shutdown() {
+
+    }
+    //这一段方法不是特别重要，就有读者自己写
+    @Override
+    public int getInitSize() {
+        return 0;
+    }
+
+    @Override
+    public int getMaxSize() {
+        return 0;
+    }
+
+    @Override
+    public int getCoreSize() {
+        return 0;
+    }
+
+    @Override
+    public int getActiveCount() {
+        return 0;
+    }
+
+    @Override
+    public int getQueueSize() {
+        return 0;
+    }
+
+    @Override
+    public boolean isShutdown() {
+        return this.isShutdown;
+    }
+    //把线程和internalTask一个组合
+    private static class ThreadTask {
+        public ThreadTask(Thread thread, InternalTask internalTask) {
+            this.thread = thread;
+            this.internalTask = internalTask;
+        }
+
+        Thread thread;
+        InternalTask internalTask;
+    }
+
+    private static class DefaultThreadFactory implements ThreadFactory {
+        private static final AtomicInteger GROUP_COUNTER = new AtomicInteger(1);
+        private static final ThreadGroup group = new ThreadGroup("我的线程-" +
+                GROUP_COUNTER.getAndDecrement());
+        private static final AtomicInteger COUNTER = new AtomicInteger(0);
+
+        @Override
+        public Thread creatThread(Runnable runnable) {
+            return new Thread(group, runnable, "线程池-" + COUNTER.getAndDecrement());
+        }
+    }
+}
+```
 
