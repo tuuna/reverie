@@ -1,141 +1,94 @@
-## seata 下载
-http://seata.io/en-us/blog/download.html
+为了解决这个问题，就出来了很多业务层面的实现二阶段的提交方案，如：很出名的 TCC 方案，基于 TCC 也有很多成熟的框架，如 ByteTCC、tcc-transaction。
 
-选择自己的版本下载
+另一种就是最终一致性的方案，如：rocketmq事务消息。
 
-## seata和nacos整合开发分布式
-### 第一步 配置seata的服务器端的数据库
-0、全局事务会话信息由3块内容构成，全局事务-->分支事务-->全局锁，对应表global_table、branch_table、lock_table
-1、建立一个数据库名字随意(我起的名字——seata)用来做seata服务端的库，存储全局事务的会话信息
-2、拿到服务端数据库的脚本文件执行并且建立表第0步三张表
-https://github.com/seata/seata/tree/1.2.0/script/server/db
-上面地址可以拿到数据库脚本，选择mysql然后自己执行
-### 第二步 修改服务端启动包的文件
-1、启动包: seata-->conf-->file.conf，修改store.mode="db"
-2、修改自己的db连接信息
-这些信息是存在file.conf当中的也就是seata启动的时候会去读取这个配置文件；如果我们使用nacos可以把这些信息放到nacos的注册中心；从而实现动态更新；
-如果你需要把这些信息放到nacos配置中心就需要修改seata-->conf-->registy.conf文件当中的注册中心和配置中心的信息，修改成为nacos；（为什么需要修改config和register呢？因为如果你的seata服务器想要去配置中心读取配置，那么一定到得把自己注册到nacos；所以registy.conf当中需要配置注册中心的地址也需要配置配置中心的地址）
-这样我们如果后面启动seata就可以看到他是作为了一个nacos的客户端注册到了nacos的注册中心的；记住这点seata已经可以作为客户端注册到nacos了；
-### 第三步 把配置信息上传到nacos配置中心
-1、启动nacos
-2、https://github.com/seata/seata/tree/1.2.0/script/config-center到这个地址上面获取config.txt，然后把config.txt当道idea当中去编辑；推荐使用idea编辑；因为可能有编码原因；保留自己想要的信息
-我这里给出的是精简后的，你们需要自己对应修改自己的信息；主要是数据库配置信息
-注意这些信息是服务器端和客户端都要使用的；
-由于上面我们已经把seata注册到了nacos；所以他的file.conf当中的信息可以直接从nacos读取；也就是下面我们配置的信息；换句话说如果你配置了seata作为nacos的一个客户端去读取配置那么file.conf可以不用配置了；这两步是重复的；这也是网上很多资料没有说明的；
-换成大白话的意思就是你如果配置了registy.conf那么file.conf当中的信息基本无效——都是从配置中心读取；甚至可以删了file.conf；你们可以自己测试；如果你不配置registy.conf，那么seata就会从file.conf当中读取配置；所以file.conf和registy.conf其实只需要配置一个；
+但上面的**TCC方案、或者最终一致性方案都会涉及到业务代码的改造，对业务有侵入。**
 
-#### 精简后的配置如下
-```
-#事务分组——my_test_tx_group 这值会在我们客户端对应，需要注意
-service.vgroupMapping.my_test_tx_group=default
-service.default.grouplist=127.0.0.1:8091
-store.mode=db
-store.db.datasource=druid
-store.db.dbType=mysql
-store.db.driverClassName=com.mysql.jdbc.Driver
-store.db.url=jdbc:mysql://ip::3306/seata?useUnicode=true
-store.db.user=username
-store.db.password=password
-store.db.minConn=5
-store.db.maxConn=30
-store.db.globalTable=global_table
-store.db.branchTable=branch_table
-store.db.queryLimit=100
-store.db.lockTable=lock_table
-store.db.maxWait=5000
-```
-那么这些精简后的配置如何传到nacos呢？
-https://github.com/seata/seata/tree/1.2.0/script/config-center
-从上面这个地址下载nacos文件下面的nacos-config.sh文件然后执行
-sh 你下载后的路径/nacos-config.sh；当然如果你的nacos地址断后不上默认的，需要修改naocs-config.sh当中指定你的路径；也可以在sh命令后面指定；
-https://github.com/seata/seata/tree/1.2.0/script/config-center这个地址里面有个readme文件有说明
+下面我们来介绍一下今天的主角。
 
-执行完成之后，你可以看到nacos的配置中心上面多了很多配置；注意这个时候seata服务器用的就是这些配置了；你可以修改一个错误的试试是不能启动seata服务器的
+**Seata**
 
-### 第四步 启动seata服务器
-讲道理可以启动成功——注意不要用jdk11；我课上测试过有问题
+Seata的分布式事务解决方案是**业务层面的解决方案**，业务层上无需关心分布式事务机制的约束，它将给我们的微服务架构带来质的提升，只依赖于**单台数据库的事务**能力。
 
-### 第五步 建立微服务项目----以spring cloud为例
-maven引入seata-spring-boot-starter、spring-cloud-alibaba-seata这两个jar
-其中seata-spring-boot-starter选择你对应的seata版本比如1.2；但是spring-cloud-alibaba-seata这个jar当中自动依赖了seata-spring-boot-starter但是版本对应不上；比如spring-cloud-alibaba-seata当中依赖的seata-spring-boot-starter可能是0.9；所以需要剔除他；什么意思呢？
+Seata 的设计思路是将一个分布式事务可以理解成一个全局事务，下面挂了若干个分支事务，而一个分支事务是一个满足 ACID 的本地事务，因此我们可以操作分布式事务像操作本地事务一样。
+
+Seata 内部定义了 3个模块来处理全局事务和分支事务的关系和处理过程，这三个组件分别是：
+
+1、Transaction Coordinator (TC)：事务协调器，维护全局事务的运行状态，负责协调并驱动全局事务的提交或回滚。
+
+2、Transaction Manager (TM)：控制全局事务的边界，负责开启一个全局事务，并最终发起全局提交或全局回滚的决议。
+
+3、Resource Manager (RM)：控制分支事务，负责分支注册、状态汇报，并接收事务协调器的指令，驱动分支（本地）事务的提交和回滚。
+
+其中，TM是一个分布式事务的发起者和终结者，TC负责维护分布式事务的运行状态，而RM则负责本地事务的运行。如下图所示：
+
+![img](image/seata_1.png)
+
+下面是一个分布式事务在Seata中的执行流程：
+
+1）TM 向 TC 申请开启一个全局事务，全局事务创建成功并生成一个全局唯一的 XID。
+
+2）XID 在微服务调用链路的上下文中传播。
+
+3）RM 向 TC 注册分支事务，接着执行这个分支事务并提交（重点：RM在第一阶段就已经执行了本地事务的提交/回滚），最后将执行结果汇报给TC。
+
+4）TM 根据 TC 中所有的分支事务的执行情况，发起全局提交或回滚决议。
+
+5）TC 调度 XID 下管辖的全部分支事务完成提交或回滚请求。
+
+**分支事务为什么能直接提交？**
+
+Seata能够在第一阶段直接提交事务，是因为Seata框架为每一个RM维护了一张UNDO_LOG表（这张表需要客户端自行创建），其中保存了每一次本地事务的回滚数据。因此，二阶段的回滚并不依赖于本地数据库事务的回滚，而是RM直接读取这张UNDO_LOG表，并将数据库中的数据更新为UNDO_LOG中存储的历史数据。
+
+如果第二阶段是提交命令，那么RM事实上并不会对数据进行提交（因为一阶段已经提交了），而实发起一个异步请求删除UNDO_LOG中关于本事务的记录。
+
+原理就是先保存之前的老数据，一旦出现异常，就是把老数据再更新回去。
+
+**Seata执行流程**
+
+下面是一个Seata中一个分布式事务执行的详细过程：
+
+1）首先TM 向 TC 申请开启一个全局事务，**全局事务创建成功并生成一个全局唯一的 XID。**
+
+2）**XID 在微服务调用链路的上下文中传播**。
+
+3）RM 开始执行这个分支事务，RM首先解析这条SQL语句，生成对应的UNDO_LOG记录。下面是一条UNDO_LOG中的记录：
 
 ```
-		<dependency>
-            <groupId>io.seata</groupId>
-            <artifactId>seata-spring-boot-starter</artifactId>
-            <version>你的版本比如1.2.0</version>
-        </dependency>
-      
-		<dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-alibaba-seata</artifactId>
-            <!-- 这里需要剔除，因为上面我们已经引入了自己对应的版本 -->
-            <exclusions>
-                <exclusion>
-                    <artifactId>io.seata</artifactId>
-                    <groupId>seata-spring-boot-starter</groupId>
-                </exclusion>
-            </exclusions>
-		</dependency>
-
+{    "branchId": 641789253,    "undoItems": [{        "afterImage": {            "rows": [{                "fields": [{                    "name": "id",                    "type": 4,                    "value": 1                }, {                    "name": "name",                    "type": 12,                    "value": "GTS"                }, {                    "name": "since",                    "type": 12,                    "value": "2014"                }]            }],            "tableName": "product"        },        "beforeImage": {            "rows": [{                "fields": [{                    "name": "id",                    "type": 4,                    "value": 1                }, {                    "name": "name",                    "type": 12,                    "value": "TXC"                }, {                    "name": "since",                    "type": 12,                    "value": "2014"                }]            }],            "tableName": "product"        },        "sqlType": "UPDATE"    }],    "xid": "xid:xxx"}
 ```
 
-当然咯分布式事务肯定需要是至少两个项目；所以你在两个项目当中都加上这些依赖；如果你是nacos的自然还需要加上其他jar；这里不在说了；
+可以看到，UNDO_LOG表中记录了分支ID，全局事务ID，以及事务执行的redo和undo数据以供二阶段恢复。
 
-建好项目之后；写好代码。自己模拟一个分布式事务的场景
-比如A调用B项目，在B项目里面操作数据库
-加上A项目当中的AController当中的a()；调用B项目当中的BController当中的b()；b方法操作数据库；那么则在A项目当中的AController的a()上面加上@GlobalTransactional这个注解
-```
-@RestController
-public class A{
-	@GlobalTransactional
-	@GetMapping("xxxxxx")
-	public string a(){
-		通过feign调用b
-	}
-}
-```
-### 第六步 配置客户端的seata
-如果你的项目已经成为了nacos的客户端，那么直接可以从nacos读取第三步当中上传到nacos的各种配置；那么如何读取呢？
-首先得在客户端进行配置告诉seata客户端需要去nacos注册中心去读取seata的配置；可能有同学会问我们的微服务项目不上已经指定了？为什么还需要配置seata去读取呢？这个我在补录的视频里面有解释
-#### 配置客户端的yml读取nacos上的seata的配置
-打开这个地址https://github.com/seata/seata/tree/1.2.0/script/client
-找到spring文件夹，找到application.yml；这个yml是通用配置；你需要精简；我给出精简后的吧
-```
-seata:
-  enabled: true
-  application-id: applicationName
-  tx-service-group: my_test_tx_group
-  enable-auto-data-source-proxy: true
-  use-jdk-proxy: false
-  config:
-    type: nacos
-   
-    nacos:
-      namespace:
-      serverAddr: localhost:你的端口
-      group: SEATA_GROUP
-      userName: ""
-      password: ""
-    
-  registry:
-    type: nacos
-    nacos:
-      application: seata-server
-      server-addr: localhost:你的端口
-      namespace:
-      userName: ""
-      password: ""
-```
+4）RM**在同一个本地事务中执行业务SQL和UNDO_LOG数据的插入**。在提交这个本地事务前，RM会**向TC申请关于这条记录的全局锁。**如果申请不到，则说明有**其他事务也在对这条记录进行操作**，因此它会在一段时间内重试，**重试失败则回滚本地事务，**并向TC汇报本地事务执行失败。如下图所示：
 
-这个配置需要在你的每一个参与分布式事务的项目当中加上——直接写到项目的yml当中就可以了。这个配置的意思就是让我们的seata客户端直接从配置中心拉取配置；
+![img](image/seata_2.png)
 
-### 最后一步
+5）RM在事务提交前，申请到了**相关记录的全局锁**，因此直接提交本地事务，并向TC汇报本地事务执行成功。此时**全局锁并没有释放**，全局锁的释放取决于二阶段是提交命令还是回滚命令。
 
-需要在你的客户端操作的数据库当中建立undo_log表；这个表用来实现sql反向补偿也就是回滚的信息
+6）TC根据所有的分支事务执行结果，向RM下发提交或回滚命令。
 
-这个表的见表语句——https://github.com/seata/seata/tree/1.2.0/script/client/at/db
-注意是建立在你的微服务所对应的库中；比如你的B服务链接了X库；那么则在x库中建立这个表；如果你的A服务链接了Y库；则Y库也需要这个表
+7）**RM如果收到TC的提交命令，首先立即释放相关记录的全局锁**，然后把提交请求放入一个异步任务的队列中，马上返回提交成功的结果给 TC。异步队列中的提交请求真正执行时，只是删除相应UNDO LOG 记录而已。
 
+![img](image/seata_3.png)
 
-OK   开始测试吧
+8）**RM如果收到TC的回滚命令，则会开启一个本地事务**，通过 XID 和 Branch ID 查找到相应的 UNDO LOG 记录。**将 UNDO LOG 中的后镜与当前数据进行比较**：
+
+**如果有不同**，说明数据被当前全局事务之外的动作做了修改。这种情况，需要根据配置策略来做处理。
+
+**否则**，根据 UNDO LOG 中的前镜像和业务 SQL 的相关信息生成并执行回滚的语句并执行，然后提交本地事务达到回滚的目的。
+
+**最后释放相关记录的全局锁。**
+
+![img](image/seata_4.png)
+
+**方案补充**
+
+上面的方案是Seata的默认模式，称为**AT模式**，它是类似于 XA 方案的两段式提交方案，并且是对业务无侵入，**但是这种机制依然是需要依赖数据库本地事务的 ACID 特性**。
+
+小伙伴们有没有发现，整个流程的基础必须是支持 ACID 特性的关系型数据库，那么问题就来了，**非关系型或者不支持 ACID 的数据库就无法使用 Seata 了？**
+
+Seata 现阶段为我们准备了另外一种模式，叫 **MT 模式**，它是一种对业务有入侵的方案，提交回滚等操作需要我们自行定义，业务逻辑需要被分解为 Prepare/Commit/Rollback 3 部分，形成一个 MT 分支，加入全局事务，其本质就是TCC方案。
+
+不过MT模式，它不是 Seata “主打”的模式，它的存在仅仅作为补充的方案，从以上官方的发展远景就可以看出来，Seata 的目标是始终是对业务无入侵的方案。
+
